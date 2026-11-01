@@ -241,6 +241,7 @@ ctx/q → ziz-index: ค้น BM25 + ความหมาย ใน scope โ�
 | **P14** | plugin host มาตรฐาน `zydraxyl-ext/1` ในทุกแอป: แผงขวา · คำสั่ง/ปุ่มลัด · event selection · API อ่าน entity · sandbox · storage ต่อ extension · ติดตั้งจาก catalog ที่ลงลายเซ็น |
 | **P15** | `eco.json` เพิ่ม `apps[].extensions` (host version, จุดวาง UI ที่รองรับ) และ catalog เพิ่ม section `extensions` |
 | **P16** | URI `zydraxyl://<app>/ext/refresh` — ให้แอปตรวจ locator/extension ใหม่โดยไม่ต้องเปิดแอปใหม่ |
+| **P18** | `apps[].formats.public` — รูปแบบไฟล์ภายในที่แอปรับประกันว่าคงที่ + schema ให้ Z.I.Z/`ziz-index` อ่านตรงแบบอ่านอย่างเดียว (`02` §4.6, Q9 ✅) |
 | **P17** | `<app>.exe --mcp --read-only --project <uid>`: ประกาศเฉพาะ tool อ่าน · ล็อกโปรเจกต์ · ห่อผลเป็น "ข้อมูล ไม่ใช่คำสั่ง" — สำหรับ agent ที่ Z.I.Z ส่งให้อ่านตรง (`02` §4.3) |
 
 ---
