@@ -47,7 +47,7 @@ dependency ใหม่ทุกตัวต้องผ่าน review licence
 
 1. **main เป็นเจ้าของ child process ทุกตัว** · ยกเลิกงาน = ฆ่าทั้งต้นไม้ด้วย Windows Job Object
    (CLI agent spawn shell และ MCP server ลูกอีกทอด — T3-A §6.2)
-2. **agent ไม่เคยคุยกับแอป Eco โดยตรงในงานของ Z.I.Z** — เห็นแค่ gateway `zydraxyl-ziz` (§4) · Z.I.Z คือ MCP client คนเดียวของแอป
+2. **agent อ่านแอป Eco ได้ตรง แต่เขียนได้ผ่าน Z.I.Z เท่านั้น** (Q3 ✅ แบบผสม — §4.3) · ทางเขียนทุกทางยังอยู่ที่ gateway + ปุ่มของผู้ใช้
    (❓ Q3)
 3. **renderer ไม่ถือความลับ ไม่ถือ path ดิบ** — เรียกผ่าน `window.ziz.*` ที่ preload เปิดให้เท่านั้น (pattern DraconDex)
 4. **ingest ทำใน utilityProcess** — ไฟล์ Word 50 MB หรือนิยาย 1 ล้านตัวอักษรต้องไม่ทำให้ UI ค้าง
@@ -148,7 +148,7 @@ headless ใช้ allow-list ที่มีผลเทียบเท่า (
 
 ## 4. MCP: gateway (Z.I.Z เป็น server) และ client (Z.I.Z ไปหาแอป)
 
-### 4.1 gateway `zydraxyl-ziz` — สิ่งเดียวที่ agent เห็น
+### 4.1 gateway `zydraxyl-ziz` — ทางเดียวที่ไปสู่การเขียน
 
 ส่งเข้า `session/new.mcpServers`:
 ```json
@@ -178,6 +178,19 @@ shim ต่อ pipe `\\.\pipe\zydraxyl-ziz-<SID>` (`FILE_FLAG_FIRST_PIPE_INSTANC
 - `clientInfo.name = "Z.I.Z"` (แอปแสดงเป็นป้าย — ECO-S1)
 - ลำดับการเขียน: `eco_propose` (ทีละ ≤ 500 entity — ECO-S10) → ผู้ใช้กด "นำไปใช้" ใน Z.I.Z → `eco_apply(proposalId)` →
   แอปแสดงยืนยัน/ใช้ batch grant (ECO-S2) → snapshot (ECO-S3) → เขียน → ใบเสร็จ (`apply_receipt`) — รายละเอียด `04-internals.md` §6
+
+
+### 4.3 อ่านตรงจากแอป (Q3 ✅ — ผสม: อ่านตรง เขียนผ่าน Z.I.Z)
+
+`session/new.mcpServers` = gateway `zydraxyl-ziz` **+ MCP ของแต่ละแอปในโปรเจกต์ของ job ในโหมดอ่านอย่างเดียว**:
+```json
+{ "name": "eco-baha-ro", "command": "C:\\…\\BahaMyth.exe", "args": ["--mcp", "--read-only", "--project", "<projectUid>"] }
+```
+- **`--read-only` บังคับที่ฝั่งแอป** (ข้อเสนอ P17): แอปเปิดเฉพาะ `eco_info` `eco_search` `eco_get` `eco_describe` `eco_stats` + tool อ่านเฉพาะแอป (เช่น `baha_realm_tree`) ·
+  ไม่มี `eco_propose`/`eco_apply`/`eco_delete`/`eco_import` ใน `tools/list` เลย — ไม่พึ่งการกรองของ agent (ACP กรอง tool ไม่ได้) — ❓ Q47
+- แอปที่ยังไม่รองรับ `--read-only` → **ไม่ส่งตรง** ใช้ `ziz_app_*` ผ่าน gateway เหมือนเดิม (fallback)
+- `--project` ล็อกขอบเขตเหมือน token ของ gateway · แอปแสดงป้าย "Z.I.Z agent (อ่านอย่างเดียว)" ตาม ECO-S1
+- ข้อดี: agent ใช้ tool เฉพาะของแอปได้ครบโดย Z.I.Z ไม่ต้อง pass-through ทีละตัว · ผลจาก MCP ของแอปไม่ผ่านการห่อป้าย "ข้อมูล ไม่ใช่คำสั่ง" ของ Z.I.Z → แอปต้องห่อเอง (ระบุใน P17)
 
 ---
 
