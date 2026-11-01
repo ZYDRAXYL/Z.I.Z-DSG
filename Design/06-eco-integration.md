@@ -128,7 +128,7 @@ bahamyth           หน้ายืนยันในแอป / batch grant �
 | RyuLong | ✅ | ✅ | `ryu_book_outline` | ✅ |
 | QuetzaLib PC | ✅ | ✅ | `qzl_search_books` `qzl_update_books` (`qzl_add_book{lookup}`) | ✅ |
 | Ourobask PC | ✅ | ✅ | `our_list_projects` `our_list_tasks` `our_claim_task` `our_submit_result` (Q22 ✅ — ส่ง `close: true` ได้เฉพาะงานที่ผู้ใช้ติ๊ก "ปิดอัตโนมัติ" ตอนมอบงาน · ไม่ติ๊ก = `needs_review`) | ✅ |
-| TiaMax | ⬜ ควร | ⬜ | — | ✅ (`tmx.actions` + `eco.entity-set`) |
+| TiaMax | ✅ **v1** (Q29 ✅ — ขอให้ทำ MCP ชุดมาตรฐาน + `--read-only` P17) | ⬜ | — | ✅ (`tmx.actions` + `eco.entity-set` — ยังใช้เป็น fallback เมื่อ MCP ไม่พร้อม) |
 
 ชื่อ tool เฉพาะในตารางเป็น**คำขอจาก Z.I.Z** — เอกสารออกแบบของแอปนั้นเป็นผู้ตัดสินชื่อและรูปจริง (ECO-G4)
 
