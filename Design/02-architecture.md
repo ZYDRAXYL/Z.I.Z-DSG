@@ -17,7 +17,9 @@
 | DOCX | **mammoth.js** | BSD-2 (verify) | DOCX → HTML เชิงความหมาย; heading → บท |
 | HTML → IR | **htmlparser2** | MIT | mammoth ให้ HTML ชุด tag จำกัด; ingest worker ไม่มี DOM จึงต้องมี parser เล็ก ๆ |
 | XLSX/XLS/CSV/ODS | **SheetJS CE** (tarball pin sha256) | Apache-2.0 | `01-research-summary.md` §3 |
-| ไม่ใช้ | pandoc · MarkItDown · vector DB · LLM SDK ใด ๆ · local model runtime | — | Z.I.Z ไม่เรียกโมเดลเอง (หลักของเจ้าของ: ใช้ CLI agent ของผู้ใช้) — ❓ Q8 |
+| โมเดลเล็ก (v0.2) | **`onnxruntime-node`** (โหลดแบบ dynamic) + table i8 อ่านด้วย JS ล้วน | MIT | แบ่งภาระงานคัดกรองจาก CLI agent — CPU ล้วน ไม่มี API key — `08-local-models.md` (Q8 เปลี่ยนคำตอบ) |
+| index (v0.2) | **`ziz-index`** daemon แยก (Rust, ยกจาก Kensaku) | MIT | อ่านไฟล์เร็ว + ใช้ร่วมทั้ง Eco — `09-fast-read-index.md` · ❓ Q30 |
+| ไม่ใช้ | pandoc · MarkItDown · vector DB แยก · LLM SDK/API ใด ๆ · LLM ใหญ่ในเครื่อง | — | งานตัดสิน/เขียนเนื้อหายังเป็นของ CLI agent ของผู้ใช้ — โมเดลเล็กแค่คัดกรอง (`08` §1) |
 
 dependency ใหม่ทุกตัวต้องผ่าน review licence + pin เวอร์ชัน + บันทึกใน `THIRD-PARTY.md` ตอนเริ่มสร้าง
 
@@ -45,7 +47,7 @@ dependency ใหม่ทุกตัวต้องผ่าน review licence
 
 1. **main เป็นเจ้าของ child process ทุกตัว** · ยกเลิกงาน = ฆ่าทั้งต้นไม้ด้วย Windows Job Object
    (CLI agent spawn shell และ MCP server ลูกอีกทอด — T3-A §6.2)
-2. **agent ไม่เคยคุยกับแอป Eco โดยตรงในงานของ Z.I.Z** — เห็นแค่ gateway `zydraxyl-ziz` (§4) · Z.I.Z คือ MCP client คนเดียวของแอป
+2. **agent อ่านแอป Eco ได้ตรง แต่เขียนได้ผ่าน Z.I.Z เท่านั้น** (Q3 ✅ แบบผสม — §4.3) · ทางเขียนทุกทางยังอยู่ที่ gateway + ปุ่มของผู้ใช้
    (❓ Q3)
 3. **renderer ไม่ถือความลับ ไม่ถือ path ดิบ** — เรียกผ่าน `window.ziz.*` ที่ preload เปิดให้เท่านั้น (pattern DraconDex)
 4. **ingest ทำใน utilityProcess** — ไฟล์ Word 50 MB หรือนิยาย 1 ล้านตัวอักษรต้องไม่ทำให้ UI ค้าง
@@ -146,7 +148,7 @@ headless ใช้ allow-list ที่มีผลเทียบเท่า (
 
 ## 4. MCP: gateway (Z.I.Z เป็น server) และ client (Z.I.Z ไปหาแอป)
 
-### 4.1 gateway `zydraxyl-ziz` — สิ่งเดียวที่ agent เห็น
+### 4.1 gateway `zydraxyl-ziz` — ทางเดียวที่ไปสู่การเขียน
 
 ส่งเข้า `session/new.mcpServers`:
 ```json
@@ -176,6 +178,39 @@ shim ต่อ pipe `\\.\pipe\zydraxyl-ziz-<SID>` (`FILE_FLAG_FIRST_PIPE_INSTANC
 - `clientInfo.name = "Z.I.Z"` (แอปแสดงเป็นป้าย — ECO-S1)
 - ลำดับการเขียน: `eco_propose` (ทีละ ≤ 500 entity — ECO-S10) → ผู้ใช้กด "นำไปใช้" ใน Z.I.Z → `eco_apply(proposalId)` →
   แอปแสดงยืนยัน/ใช้ batch grant (ECO-S2) → snapshot (ECO-S3) → เขียน → ใบเสร็จ (`apply_receipt`) — รายละเอียด `04-internals.md` §6
+
+
+### 4.3 อ่านตรงจากแอป (Q3 ✅ — ผสม: อ่านตรง เขียนผ่าน Z.I.Z)
+
+`session/new.mcpServers` = gateway `zydraxyl-ziz` **+ MCP ของแต่ละแอปในโปรเจกต์ของ job ในโหมดอ่านอย่างเดียว**:
+```json
+{ "name": "eco-baha-ro", "command": "C:\\…\\BahaMyth.exe", "args": ["--mcp", "--read-only", "--project", "<projectUid>"] }
+```
+- **`--read-only` บังคับที่ฝั่งแอป** (ข้อเสนอ P17): แอปเปิดเฉพาะ `eco_info` `eco_search` `eco_get` `eco_describe` `eco_stats` + tool อ่านเฉพาะแอป (เช่น `baha_realm_tree`) ·
+  ไม่มี `eco_propose`/`eco_apply`/`eco_delete`/`eco_import` ใน `tools/list` เลย — ไม่พึ่งการกรองของ agent (ACP กรอง tool ไม่ได้) — ❓ Q47
+- แอปที่ยังไม่รองรับ `--read-only` → **ไม่ส่งตรง** ใช้ `ziz_app_*` ผ่าน gateway เหมือนเดิม (fallback)
+- `--project` ล็อกขอบเขตเหมือน token ของ gateway · แอปแสดงป้าย "Z.I.Z agent (อ่านอย่างเดียว)" ตาม ECO-S1
+- ข้อดี: agent ใช้ tool เฉพาะของแอปได้ครบโดย Z.I.Z ไม่ต้อง pass-through ทีละตัว · ผลจาก MCP ของแอปไม่ผ่านการห่อป้าย "ข้อมูล ไม่ใช่คำสั่ง" ของ Z.I.Z → แอปต้องห่อเอง (ระบุใน P17)
+
+
+### 4.4 การลบ (Q10 ✅ — ลบได้ ยืนยันทุกครั้ง)
+
+- op ชนิด `delete` อยู่ใน changeset ได้ (agent เสนอผ่าน `ziz_changeset_add_ops` หรือผู้ใช้สร้างเองใน Mirror) — **gateway ยังไม่มี `eco_delete`**: Z.I.Z เรียก `eco_delete` เองเมื่อผู้ใช้กด
+- ใน Mirror/แผงข้อเสนอ ก้อน "ลบ" เป็นสีแดง **ไม่ถูกติ๊กไว้ก่อนเสมอ** · ก้อนลบที่มาจากเนื้อหาในไฟล์ (`↯` — `04` §7.3) ถูกปิดเลือกจนกว่าผู้ใช้กดปลดเอง
+- **ไม่ใช้ batch grant กับการลบ:** แอปยืนยันทุกครั้ง (ECO-S2) แสดงรายการที่จะลบและจำนวนลิงก์ที่จะเสีย · แอปทำ snapshot ก่อนลบ (ECO-S3) → ย้อนได้ด้วย `eco_revert` (Q5 ✅)
+- ลบทีละไม่เกิน 50 entity ต่อการยืนยันหนึ่งครั้ง (Q48 ✅) · agent เสนอการลบได้ ตามกฎสองข้อบน (Q49 ✅)
+
+### 4.5 ธง "ใช้เฉพาะในเครื่อง" (Q7 ✅)
+
+ต่อโปรเจกต์ (`workspace.local_only`): ถ้าเปิด → Z.I.Z ส่งงานให้เฉพาะโมเดลเล็กในเครื่อง (`08`) และ agent ที่ผู้ใช้**ประกาศ**ว่ารันในเครื่อง (เช่น Goose + Ollama) ·
+CLI ที่ใช้โมเดล cloud (Claude Code, Codex, Gemini) ถูกปิดในโปรเจกต์นั้น · ป้ายบอกตรง ๆ ว่า "เป็นคำประกาศของคุณ Z.I.Z ตรวจไม่ได้ว่า agent ส่งข้อมูลออกหรือไม่" ·
+Link (`11`) ในโปรเจกต์นี้ใช้ได้แค่ค้น/สรุปไว · Terminal ยังเปิดได้ (เป็นของผู้ใช้) แต่โหมด "ต่อกับโปรเจกต์" ปิด
+
+### 4.6 อ่านไฟล์ของแอปตรง (Q9 ✅ — เฉพาะรูปแบบที่แอปประกาศเป็นสาธารณะ)
+
+แอปประกาศใน `eco.json`: `apps[].formats.public: [{ "glob": "Locate/*.dpage", "schema": "dracon.page@1", "stable": true }]` (ข้อเสนอ P18) ·
+Z.I.Z (และ `ziz-index`) อ่านเฉพาะไฟล์ที่ตรง glob · อ่านอย่างเดียว · validate กับ schema ก่อนใช้ — ไม่ผ่าน = ข้ามและแจ้งใน Doctor ·
+ใช้เมื่อแอปปิด/ไม่มี MCP แทน `.zeco` เก่า · รูปแบบที่ไม่ได้ประกาศ = ห้ามอ่าน (เหมือนเดิม)
 
 ---
 

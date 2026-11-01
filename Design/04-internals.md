@@ -38,6 +38,7 @@ CREATE TABLE workspace (           -- มีแถวเดียว
   eco_project_uid TEXT,            -- projectUid ใน .zydraxyl/project.json · NULL = โฟลเดอร์ธรรมดา
   title TEXT NOT NULL, root_path TEXT NOT NULL,   -- path ในเครื่อง ห้ามออกไปกับไฟล์ส่งออก (ECO-R11)
   ai_allowed INTEGER NOT NULL DEFAULT 0,          -- ECO-S5 opt-in ต่อโปรเจกต์
+  local_only INTEGER NOT NULL DEFAULT 0,          -- Q7 ✅ ธง "ใช้เฉพาะในเครื่อง": ใช้แค่โมเดลเล็ก + agent ที่ผู้ใช้ประกาศว่าเป็น local (`02` §4.5)
   local_only INTEGER NOT NULL DEFAULT 0,          -- ❓ Q7
   created_at TEXT NOT NULL, schema_written_by TEXT NOT NULL);  -- เวอร์ชัน Z.I.Z ที่เขียนล่าสุด (ECO-K7)
 
