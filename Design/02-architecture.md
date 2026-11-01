@@ -17,7 +17,9 @@
 | DOCX | **mammoth.js** | BSD-2 (verify) | DOCX → HTML เชิงความหมาย; heading → บท |
 | HTML → IR | **htmlparser2** | MIT | mammoth ให้ HTML ชุด tag จำกัด; ingest worker ไม่มี DOM จึงต้องมี parser เล็ก ๆ |
 | XLSX/XLS/CSV/ODS | **SheetJS CE** (tarball pin sha256) | Apache-2.0 | `01-research-summary.md` §3 |
-| ไม่ใช้ | pandoc · MarkItDown · vector DB · LLM SDK ใด ๆ · local model runtime | — | Z.I.Z ไม่เรียกโมเดลเอง (หลักของเจ้าของ: ใช้ CLI agent ของผู้ใช้) — ❓ Q8 |
+| โมเดลเล็ก (v0.2) | **`onnxruntime-node`** (โหลดแบบ dynamic) + table i8 อ่านด้วย JS ล้วน | MIT | แบ่งภาระงานคัดกรองจาก CLI agent — CPU ล้วน ไม่มี API key — `08-local-models.md` (Q8 เปลี่ยนคำตอบ) |
+| index (v0.2) | **`ziz-index`** daemon แยก (Rust, ยกจาก Kensaku) | MIT | อ่านไฟล์เร็ว + ใช้ร่วมทั้ง Eco — `09-fast-read-index.md` · ❓ Q30 |
+| ไม่ใช้ | pandoc · MarkItDown · vector DB แยก · LLM SDK/API ใด ๆ · LLM ใหญ่ในเครื่อง | — | งานตัดสิน/เขียนเนื้อหายังเป็นของ CLI agent ของผู้ใช้ — โมเดลเล็กแค่คัดกรอง (`08` §1) |
 
 dependency ใหม่ทุกตัวต้องผ่าน review licence + pin เวอร์ชัน + บันทึกใน `THIRD-PARTY.md` ตอนเริ่มสร้าง
 

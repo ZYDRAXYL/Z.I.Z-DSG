@@ -1,6 +1,6 @@
 # Z.I.Z — เอกสารออกแบบ
 
-> **สถานะ: ออกแบบ ยังไม่สร้าง** · ร่าง v0.1 · 2026-10-18
+> **สถานะ: ออกแบบ ยังไม่สร้าง** · ร่าง v0.1 · 2026-10-18 · **v0.2 · 2026-11-01** เพิ่ม `08`–`10` (โมเดลเล็ก · อ่านไฟล์เร็ว · UI ใหม่) — Q8 เปลี่ยนคำตอบ
 > app id `ziz` · format code `ziz` (ECO-I1) · Eco v1 = Windows PC เท่านั้น
 
 ## Z.I.Z คืออะไร
@@ -22,7 +22,11 @@ Z.I.Z คือ "ห้องควบคุม" ของ Zydraxyl Eco: เป�
 | [`04-internals.md`](./04-internals.md) | data model (SQLite) · รูปแบบไฟล์ · pipeline นำเข้า (DOCX/XLSX/นิยายไทยยาว) · changeset · recipe · การป้องกัน prompt injection · migration |
 | [`05-ux-ui.md`](./05-ux-ui.md) | หน้าจอ · ASCII layout · flow ทีละขั้น · onboarding · ธีม · accessibility · ตัวอักษรไทย |
 | [`06-eco-integration.md`](./06-eco-integration.md) | format ที่อ่าน/เขียน · MCP client/gateway · recipe ต่อแอป · locator · fixture · ข้อเสนอเพิ่มเข้า Eco contract |
-| [`07-grill-me.md`](./07-grill-me.md) | 29 คำถามที่เจ้าของต้องตัดสิน (เรียงเป็นรอบ) |
+| [`07-grill-me.md`](./07-grill-me.md) | 34 คำถามที่เจ้าของต้องตัดสิน (เรียงเป็นรอบ) |
+| [`08-local-models.md`](./08-local-models.md) | **v0.2** โมเดลเล็กในเครื่องที่แบ่งภาระจาก CLI agent · multi-repo ต่อโมเดล · pack เป็น release · อัปเดต/ย้อนบนเครื่องผู้ใช้ |
+| [`09-fast-read-index.md`](./09-fast-read-index.md) | **v0.2** `ziz-index` อ่านไฟล์เร็ว ปรับจาก Kensaku (tokenizer ไทย · IR cache) · ใช้ร่วมกับแอปอื่นใน Eco |
+| [`10-ui-home-mirror-spaces.md`](./10-ui-home-mirror-spaces.md) | **v0.2** Home แบบ Agent Graph 2D/3D · AI Mirror Workstation (duo view) · Spaces ต่อแอป (คำแนะนำ + รูปแบบซ้ำ) |
+| [`prototype/ziz-ui.html`](./prototype/ziz-ui.html) | prototype คลิกได้ของ Home / Mirror / Spaces (เปิดในเบราว์เซอร์) |
 
 ## ลำดับการอ่าน
 
