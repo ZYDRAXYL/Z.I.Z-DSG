@@ -11,7 +11,7 @@ rail ≤ 6 (UX-LAYOUT §6.1) — Console ย้ายเข้า Home เป็
 
 | rail | หน้า | แทนของเดิม |
 |---|---|---|
-| ① ◎ | **Home** — Agent Graph + แชต + การ์ดงาน | Console (Z3) + ส่วนหนึ่งของ Insight |
+| ① ◎ | **Home** — Agent Graph + dock ‹แชต \| Terminal› + การ์ดงาน (`11` §6) | Console (Z3) + ส่วนหนึ่งของ Insight |
 | ② ▦ | **Spaces** — แยกตามแอป: คำแนะนำ + รูปแบบที่ทำซ้ำ | ใหม่ |
 | ③ 📊 | Insight (Z10) | เดิม |
 | ④ 🗂 | โปรเจกต์ & แหล่ง (Z2) | เดิม |

@@ -126,6 +126,25 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:gra
 .mfoot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line);background:var(--surface);font-size:13px;color:var(--t2)}
 .mfoot .sp{flex:1}
 
+/* dock tabs + terminal */
+.dtabs{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.dtabs .sp{flex:1}
+.term{margin:0;background:#0b0a0f;color:#d9d4e3;font:12.5px/1.5 var(--f-mono);border-radius:var(--r);padding:10px 12px;height:150px;overflow:auto;white-space:pre-wrap;border:1px solid var(--line)}
+.term .p{color:#8fd18f} .term .m{color:#c3a6ff} .term .d{color:#8a8496}
+.termin{display:flex;gap:8px} .termin input{flex:1;min-width:0;background:#0b0a0f;color:#d9d4e3;border:1px solid var(--line);border-radius:var(--r);padding:6px 10px;font:12.5px var(--f-mono)}
+/* link demo (host app) */
+#v-link{grid-template-columns:1fr 340px}
+.host{padding:20px 24px;overflow:auto;display:grid;align-content:start;gap:14px;min-width:0}
+.hostbar{display:flex;align-items:center;gap:10px;color:var(--t2);font-size:13px}
+.hostbar b{color:var(--c-baha);font:600 15px var(--f-display)}
+.ent{display:grid;grid-template-columns:120px 1fr;gap:16px;border:1px solid var(--line);border-radius:var(--r);padding:16px;background:var(--surface)}
+.ent .pic{aspect-ratio:1;border-radius:6px;background:linear-gradient(135deg,var(--c-baha),var(--c-ryu));opacity:.55;max-width:100%}
+.ent.sel{outline:2px solid var(--accent)}
+.linkp{border-left:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:12px;padding:14px;overflow:auto;min-width:0}
+.linkp header{display:flex;align-items:center;gap:8px;font:600 14px var(--f-display)}
+.linkp header i{width:18px;height:18px;border-radius:5px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:600 9px var(--f-mono);font-style:normal}
+.onscreen{font-size:13px;color:var(--t2)} .onscreen b{color:var(--t1)}
+.brief{display:grid;gap:6px;font-size:13.5px} .brief ul{margin:0;padding-left:18px;display:grid;gap:4px}
 /* spaces */
 #v-spaces{grid-template-columns:230px 1fr}
 .sside{border-right:1px solid var(--line);background:var(--surface);padding:12px 8px;overflow:auto;display:grid;align-content:start;gap:2px}
@@ -152,6 +171,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:gra
   #v-home{grid-template-columns:1fr} #v-home .panel{display:none}
   .duo{grid-template-columns:1fr 36px 1fr} .hunks{display:none}
   #v-spaces{grid-template-columns:1fr} .sside{display:none}
+  #v-link{grid-template-columns:1fr;grid-template-rows:auto auto;overflow:auto} .linkp{border-left:0;border-top:1px solid var(--line)}
   .proj,.top .chip{display:none}
 }
 @media (max-width:560px){
@@ -193,13 +213,24 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:gra
           <div class="listview" id="listview" hidden></div>
         </div>
         <div class="dock">
-          <div class="jobcard">
+          <div class="dtabs">
+            <div class="seg" role="tablist" aria-label="แชตหรือ terminal"><button role="tab" id="tChat" aria-pressed="true">แชต</button><button role="tab" id="tTerm" aria-pressed="false">Terminal 1</button></div>
+            <span class="sp"></span>
+            <span id="termTools" hidden><button class="btn" data-run="claude">▶ claude</button> <button class="btn" data-run="codex">▶ codex</button>
+            <label class="meta"><input type="checkbox" id="tProj"> ต่อกับโปรเจกต์ (อ่านอย่างเดียว)</label></span>
+          </div>
+          <div id="termBox" hidden>
+            <pre class="term" id="term" aria-live="polite"><span class="d">PowerShell 7 · Z.I.Z Terminal — เป็น shell ของคุณ: Z.I.Z ไม่พิมพ์แทนและไม่บันทึก</span>
+<span class="p">PS C:\Moonfall&gt;</span> </pre>
+            <form class="termin" id="termForm"><label for="termIn" hidden>คำสั่ง</label><input id="termIn" placeholder="พิมพ์คำสั่ง เช่น claude" autocomplete="off"><button class="btn">⏎</button></form>
+          </div>
+          <div class="jobcard" id="chatBox1">
             <span class="step">novel→baha</span>
             <span class="tag">ner 1.3</span> หาชื่อ <span class="num">214</span> ผู้สมัคร → <span class="tag">Claude Code</span> ยืนยัน <span class="num">38</span>
             <span class="bar" aria-label="ความคืบหน้า บทที่ 8 จาก 12"><i></i></span><span class="num">8/12 บท</span>
             <button class="btn">⏸ หยุด</button>
           </div>
-          <form class="composer" id="composer">
+          <form class="composer" id="composer" data-chat>
             <label for="ask" hidden>ถามหรือสั่ง</label>
             <input id="ask" placeholder="ถาม/สั่ง… พิมพ์ @ เพื่ออ้างโหนด เช่น @อาริน">
             <button class="btn primary">ส่ง</button>
@@ -235,6 +266,25 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:gra
     </section>
 
     <!-- SPACES -->
+    <section class="view" id="v-link" aria-label="ตัวอย่าง Z.I.Z Link ใน BahaMyth" hidden>
+      <div class="host">
+        <div class="hostbar"><b>BahaMyth</b> · Moonfall › ตัวละคร › อาริน <span class="tag">ตัวอย่างแอปเจ้าบ้าน</span></div>
+        <div class="ent sel"><div class="pic" role="img" aria-label="รูปตัวละคร"></div>
+          <dl class="kv"><dt>ชื่อ</dt><dd>อาริน</dd><dt>เผ่า</dt><dd>มนุษย์</dd><dt>ถิ่น</dt><dd>ท่าเรือหมอก</dd><dt>คำอธิบาย</dt><dd>นักเดินเรือหนุ่มที่ตามหาหอคอยเงา</dd></dl></div>
+        <div class="ent"><div class="pic" role="img" aria-label="รูปตัวละคร"></div><dl class="kv"><dt>ชื่อ</dt><dd>เซลีน</dd><dt>เผ่า</dt><dd>เลือดครึ่งเอลฟ์</dd></dl></div>
+        <p class="meta">Link ถูกติดตั้งโดย BahaMyth เองเมื่อพบว่าเครื่องมี Z.I.Z (ไม่ได้มากับตัวติดตั้งแอป) · ปุ่มลัด Ctrl+Shift+Z</p>
+      </div>
+      <aside class="linkp" aria-label="Z.I.Z Link">
+        <header><i>&gt;_</i>Z.I.Z Link</header>
+        <div class="onscreen">◆ บนจอ: <b>อาริน</b> (ตัวละคร)</div>
+        <form class="composer" id="linkForm"><label for="linkQ" hidden>ถามหรือค้น</label><input id="linkQ" placeholder="ถามหรือค้นในโปรเจกต์…"><button class="btn primary">⏎</button></form>
+        <div class="brief" id="brief"></div>
+        <button class="btn" id="deep">ถามลึกด้วย Claude Code</button>
+        <div class="row" style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-go="home">เปิดใน Z.I.Z</button><button class="btn" data-go="mirror">เปิด Mirror</button></div>
+        <p class="meta" style="margin-top:auto">● เชื่อมกับ Z.I.Z 1.4 · link/1 · index 2 วินาทีที่แล้ว</p>
+      </aside>
+    </section>
+
     <section class="view" id="v-spaces" aria-label="Spaces" hidden>
       <nav class="sside" id="sside" aria-label="แอปใน Eco"></nav>
       <div class="sbody" id="sbody"></div>
@@ -247,6 +297,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:gra
     <span>index <span class="num">2</span> วินาทีที่แล้ว · <span class="num">12 ms</span></span>
     <span>MCP <span class="num">5/7</span></span>
     <span class="r"></span>
+    <button class="btn" data-go="link" title="ตัวอย่าง extension ในแอปอื่น">Link ในแอป ↗</button>
     <div class="seg" role="group" aria-label="มิติกราฟ"><button id="b2d" aria-pressed="true">2D</button><button id="b3d" aria-pressed="false">3D</button></div>
     <button class="btn" id="listBtn" aria-pressed="false" title="Alt+L">☰ รายการ</button>
   </footer>
@@ -291,7 +342,7 @@ let toastT; function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ---------- routing ----------
-const VIEWS=['home','mirror','spaces'];
+const VIEWS=['home','mirror','spaces','link'];
 function show(v){ if(!VIEWS.includes(v)) v='home';
   VIEWS.forEach(x=>$('#v-'+x).hidden=x!==v);
   document.querySelectorAll('.rail [data-go]').forEach(b=>b.dataset.go===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
@@ -473,6 +524,29 @@ function renderSpaces(){
 }
 $('#sside').addEventListener('click',e=>{const b=e.target.closest('[data-sp]'); if(b){curSpace=b.dataset.sp; recipeOpen=-1; renderSpaces();}});
 $('#sbody').addEventListener('click',e=>{const b=e.target.closest('[data-recipe]'); if(b){recipeOpen=+b.dataset.recipe; renderSpaces();}});
+
+// ---------- dock: chat / terminal ----------
+function dockTab(term){ $('#tChat').setAttribute('aria-pressed',!term); $('#tTerm').setAttribute('aria-pressed',term);
+  $('#termBox').hidden=!term; $('#termTools').hidden=!term; $('#chatBox1').hidden=term; $('#composer').hidden=term; if(term) $('#termIn').focus(); }
+$('#tChat').onclick=()=>dockTab(false); $('#tTerm').onclick=()=>dockTab(true);
+function termOut(html){ const t=$('#term'); t.insertAdjacentHTML('beforeend',html); t.scrollTop=t.scrollHeight; }
+function runCmd(c){ termOut(esc(c)+'\n');
+  if(/^(claude|codex)/.test(c)){ const proj=$('#tProj').checked;
+    termOut(`<span class="m">╭ ${c.startsWith('codex')?'Codex':'Claude Code'} ─────────────────────────╮</span>\n`+(proj?'<span class="d">  MCP: zydraxyl-ziz (อ่านอย่างเดียว) · tool: ziz_index_search, ziz_app_get</span>\n':'<span class="d">  ไม่ได้ต่อกับโปรเจกต์ — ติ๊ก "ต่อกับโปรเจกต์" เพื่อให้ค้นข้อมูล Moonfall ได้</span>\n')+
+      `<span class="m">│</span> &gt; อารินโผล่ในบทไหนบ้าง\n`+(proj?'<span class="m">│</span> ● ziz_index_search("อาริน") · 23 ผล\n<span class="m">│</span> อารินปรากฏในบทที่ 1–9, 12, 15–27…\n':'<span class="m">│</span> ไม่พบข้อมูลโปรเจกต์ในบริบทนี้\n')+`<span class="m">╰──────────────────────────────────────╯</span>\n`); }
+  else if(c) termOut('<span class="d">(ตัวอย่าง) คำสั่งนี้รันใน shell ของคุณจริงในแอป</span>\n');
+  termOut('<span class="p">PS C:\\Moonfall&gt;</span> '); }
+$('#termForm').onsubmit=e=>{e.preventDefault(); runCmd($('#termIn').value.trim()); $('#termIn').value='';};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-run]'); if(b){ dockTab(true); runCmd(b.dataset.run); }});
+addEventListener('keydown',e=>{ if(e.ctrlKey&&e.key==='`'){e.preventDefault(); dockTab($('#termBox').hidden);} });
+
+// ---------- link demo ----------
+const BRIEF={def:{h:'สรุปไว · อาริน',ms:120,items:['ปรากฏใน RyuLong 23 บท (บทที่ 1–9, 12, 15–27) · ครั้งแรก บทที่ 1 "อารินยืนอยู่ที่ท่าเรือ…"','ถูกพูดถึงคู่กับ เซลีน 31 ครั้ง · ยังไม่มีความสัมพันธ์ใน BahaMyth ✦','เควสต์ใน LevelthanQ ที่อ้างถึง: "ดาบจันทรา"','สะกดเป็น "ริน" 9 ครั้ง (บท 3, 5, 8)']}};
+function renderBrief(q){ const b=BRIEF.def;
+  $('#brief').innerHTML=`<div class="meta" style="display:flex;justify-content:space-between"><b style="color:var(--t1)">${q?'ผลค้น: '+esc(q):b.h}</b><span class="num">${q?38:b.ms} ms</span></div><ul>${b.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul><span class="src">ที่มา: index · ner 1.3 · ไม่ใช้ CLI agent</span>`; }
+$('#linkForm').onsubmit=e=>{e.preventDefault(); renderBrief($('#linkQ').value.trim());};
+$('#deep').onclick=()=>toast('จะส่งคำถามให้ Claude Code ในเครื่องคุณผ่าน Z.I.Z (ใช้โควตาของคุณ)');
+renderBrief('');
 
 // ---------- boot ----------
 select('core'); renderMirror(); renderSpaces(); show(location.hash.slice(1)); resize(); requestAnimationFrame(draw);

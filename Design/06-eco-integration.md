@@ -72,7 +72,7 @@ agent ไม่มีแม้แต่ช่องทางขอ)
 - **อ่าน** `%LOCALAPPDATA%\Zydraxyl\locator\*.json` + `instances\*.json` เท่านั้น (ECO-L2) · path หาย = แถวจาง + Locate (ECO-L4)
 - เปิดโปรเจกต์ Eco = อ่าน `.zydraxyl\project.json` (ECO-L6) → `members` → สร้าง workspace ใน `<EcoProject>\ZIZ\` (❓ Q6)
 - เขียน `members.ziz = {projectUid: <workspaceUid>, path: "ZIZ", role: "analysis"}` เท่านั้น — atomic + อ่านซ้ำก่อนเขียน (ECO-L7) · ไม่แตะ `members` ของแอปอื่น
-- Z.I.Z **ไม่เขียน locator ของตัวเองใน v1** (§17 ให้ ⬜) — workspace ของ Z.I.Z ไม่ใช่ "โปรเจกต์" ที่ Hub ต้องเปิด; ถ้าเจ้าของอยากให้ Hub แสดง เพิ่มได้ภายหลัง
+- ~~Z.I.Z **ไม่เขียน locator ของตัวเองใน v1**~~ → **v0.3: เขียน `locator\ziz.json`** เพื่อให้แอปรู้ว่ามี Z.I.Z และติดตั้ง Link ได้ (`11` §2.4) · ข้อความเดิม: (§17 ให้ ⬜) — workspace ของ Z.I.Z ไม่ใช่ "โปรเจกต์" ที่ Hub ต้องเปิด; ถ้าเจ้าของอยากให้ Hub แสดง เพิ่มได้ภายหลัง
 - `links` ใน `project.json`: Z.I.Z **อ่าน** เพื่อ Insight · เพิ่มลิงก์ได้ (ECO-L7 อนุญาต) เฉพาะเมื่อผู้ใช้กด "บันทึกความเชื่อมโยงนี้" ในรายงานตรวจความสอดคล้อง
 
 ### 3.4 Deep link / argv / ไฟล์
