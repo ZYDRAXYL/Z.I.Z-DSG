@@ -122,12 +122,12 @@ bahamyth           หน้ายืนยันในแอป / batch grant �
 
 | แอป | ชุดมาตรฐาน ECO-C6 | ข้อเสนอ P2–P4 (`eco_stats` `eco_revert` `eco_describe`) | tool เฉพาะที่ recipe ใช้ | ส่งออก `eco.entity-set` |
 |---|---|---|---|---|
-| DraconDex 6 | ✅ | ✅ | — (ใช้ `eco_import` รับ Page) | ✅ (pages + modules ที่ผู้ใช้เลือก) |
+| DraconDex 6 | ✅ | ✅ | `ddx_create_page` (Q21 ✅ — รับเนื้อหา `ziz.report` ผ่าน propose/apply · DraconDex จัดหน้าเอง) | ✅ (pages + modules ที่ผู้ใช้เลือก) |
 | BahaMyth | ✅ | ✅ | `baha_realm_tree` `baha_timeline_list` | ✅ |
 | LevelthanQ | ✅ | ✅ | `lvq_validate_structure` | ✅ |
 | RyuLong | ✅ | ✅ | `ryu_book_outline` | ✅ |
 | QuetzaLib PC | ✅ | ✅ | `qzl_search_books` `qzl_update_books` (`qzl_add_book{lookup}`) | ✅ |
-| Ourobask PC | ✅ | ✅ | `our_list_projects` `our_list_tasks` `our_claim_task` `our_submit_result` | ✅ |
+| Ourobask PC | ✅ | ✅ | `our_list_projects` `our_list_tasks` `our_claim_task` `our_submit_result` (Q22 ✅ — ส่ง `close: true` ได้เฉพาะงานที่ผู้ใช้ติ๊ก "ปิดอัตโนมัติ" ตอนมอบงาน · ไม่ติ๊ก = `needs_review`) | ✅ |
 | TiaMax | ⬜ ควร | ⬜ | — | ✅ (`tmx.actions` + `eco.entity-set`) |
 
 ชื่อ tool เฉพาะในตารางเป็น**คำขอจาก Z.I.Z** — เอกสารออกแบบของแอปนั้นเป็นผู้ตัดสินชื่อและรูปจริง (ECO-G4)
