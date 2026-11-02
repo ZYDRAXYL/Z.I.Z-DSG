@@ -36,7 +36,7 @@
 
 | ชื่อ | ชนิด | สาระ | licence | Z.I.Z ใช้อย่างไร |
 |---|---|---|---|---|
-| **LLMLingua / LongLLMLingua / LLMLingua-2** (Microsoft · arXiv 2403.12968 · `microsoft/LLMLingua`) | paper + OSS | บีบ prompt โดยตัด token ที่ข้อมูลน้อย · v2 = token classifier เล็ก (distill จาก GPT-4) ทำงานไม่ขึ้นกับงาน · มี port JS (`@atjsh/llmlingua-2`) | โค้ด MIT · demo Space บน HF ติด CC-BY-NC-SA — **น้ำหนักโมเดลต้อง verify** | ผู้สมัครโมเดล `ZIZ-M-compress` (§3.4, ❓ Q61) · ต้องวัดกับไทย — classifier ฝึกบนภาษาอังกฤษเป็นหลัก **และห้ามบีบข้อความที่จะใช้เป็น quote** (ตรวจ quote ต้องเทียบกับต้นฉบับ) |
+| **LLMLingua / LongLLMLingua / LLMLingua-2** (Microsoft · arXiv 2403.12968 · `microsoft/LLMLingua`) | paper + OSS | บีบ prompt โดยตัด token ที่ข้อมูลน้อย · v2 = token classifier เล็ก (distill จาก GPT-4) ทำงานไม่ขึ้นกับงาน · มี port JS (`@atjsh/llmlingua-2`) | โค้ด MIT · demo Space บน HF ติด CC-BY-NC-SA — **น้ำหนักโมเดลต้อง verify** | ผู้สมัครโมเดล `ZIZ-M-compress` (§3.4, Q61 ✅) · ต้องวัดกับไทย — classifier ฝึกบนภาษาอังกฤษเป็นหลัก **และห้ามบีบข้อความที่จะใช้เป็น quote** (ตรวจ quote ต้องเทียบกับต้นฉบับ) |
 | **Aider repo map** (`Aider-AI/aider` · `repomap.py`) | OSS | สร้าง "แผนที่" ของ repo ด้วย tree-sitter + PageRank ของสัญลักษณ์ แล้วตัดให้พอดีงบโทเคน (`--map-tokens` ค่าเริ่ม 1,024) | Apache-2.0 (verify) | **ต้นแบบของ `ziz_scope_outline`** (`12` §3.4): แทนสัญลักษณ์โค้ดด้วย entity/บท/relation · จัดอันดับด้วยจำนวนลิงก์ข้ามแอป · ตัดให้พอดีงบด้วย binary search |
 | **Agentless** (Xia et al. 2024 · arXiv 2407.01489) | paper + OSS | pipeline ตายตัว localize → repair → validate แทน agent ที่เลือกทางเอง · รายงานว่าถูกกว่า agent อื่นมากบน SWE-bench Lite | — (verify) | ยืนยันแนวทางที่ Z.I.Z ใช้อยู่แล้ว: **recipe เป็นขั้นตายตัว** (`04` §3.3) · agent ทำเฉพาะขั้นที่ต้องเขียนเนื้อหา ไม่เดินสำรวจเอง |
 | **"The Complexity Trap"** (arXiv 2508.21433) | paper | ใน SWE-agent การ **ซ่อนผล observation เก่า** (masking) ลดค่าใช้จ่ายราวครึ่งหนึ่ง และได้ผลเท่าการให้ LLM สรุปประวัติ | — | ทำใน gateway (§3.5): ผล tool ที่เก่ากว่า N รอบถูกแทนด้วย `‹ผลเดิม: ziz_source_read ch.3–4 · ดูซ้ำได้›` — ไม่ต้องมีโมเดลสรุป |
@@ -52,7 +52,7 @@
 | **Model2Vec** (`MinishLab/model2vec`) · **potion-multilingual-128M** | กลั่น sentence transformer เป็นตาราง embedding แบบ static · ไม่ต้องใช้ข้อมูลฝึก · CPU ล้วน · potion-multilingual กลั่นจาก BGE-M3, 101 ภาษา, 256 มิติ | MIT (repo + model card) | **ฐานของ `ZIZ-M-embed`** (`08` §2 เขียนไว้แล้วว่า model2vec) · มิติ 256 ตรงกับ ABI `embed/1` · ต้องวัด recall ภาษาไทยก่อน |
 | **GLiNER** (`urchade/GLiNER`) · `gliner_multi-v2.1` | NER ที่ระบุชนิด entity ตอนใช้งานได้ (zero-shot) · ~200M พารามิเตอร์ | v2.1 = Apache-2.0 · รุ่นแรก `gliner_multi` = **CC-BY-NC** (verify บน model card) | ผู้สมัคร teacher สำหรับ distill `ZIZ-M-ner` หรือใช้ตรงถ้า ONNX int8 พอดีงบ RAM · **ห้ามใช้รุ่น NC** |
 | **PyThaiNLP** | ตัดคำ (newmm) · NER ไทย (thainer) · เครื่องมือไทยครบ | โค้ด Apache-2.0 · ข้อมูลของโครงการ CC0 · **โมเดล NER ต้อง verify แยก** | ใช้ใน `ZIZ-M-ner/train/` (สร้าง label · ประเมิน) — **ไม่ฝังในแอป** (Python) |
-| **Typhoon 2** (SCB 10X · 1B/3B/…) · **Typhoon T1** (3B reasoning, arXiv 2502.09042) | LLM เน้นไทย มีรุ่นเล็ก 1B/3B สำหรับบนเครื่อง | Typhoon-7B รุ่นแรก Apache-2.0 · **Typhoon 2 ต้อง verify** | ผู้สมัครฐานของ `ZIZ-M-gen` แทน ~0.5B ทั่วไป (`08` §2 · ❓ Q62) — 1B Q4 ≈ 0.7 GB เกินงบเดิม 300–400 MB ต้องตัดสินใจ |
+| **Typhoon 2** (SCB 10X · 1B/3B/…) · **Typhoon T1** (3B reasoning, arXiv 2502.09042) | LLM เน้นไทย มีรุ่นเล็ก 1B/3B สำหรับบนเครื่อง | Typhoon-7B รุ่นแรก Apache-2.0 · **Typhoon 2 ต้อง verify** | ผู้สมัครฐานของ `ZIZ-M-gen` แทน ~0.5B ทั่วไป (`08` §2 · Q62 ✅ ทดสอบเทียบแล้วเลือก · งบ ≤ 800 MB) — 1B Q4 ≈ 0.7 GB เกินงบเดิม 300–400 MB ต้องตัดสินใจ |
 | **GPTCache** (`zilliztech/GPTCache`) | semantic cache: คำถามคล้ายเดิม → คืนคำตอบเดิมโดยไม่เรียก LLM · เตือนเองว่ามี false positive | MIT (verify) | **ยืมแนวคิด ไม่ยกโค้ด** (Python) → `ziz-cache` ใน `ziz.db` (§3.1) ใช้ `ZIZ-M-embed` ที่มีอยู่ |
 | **llama.cpp** | runtime GGUF บน CPU | MIT | มีใน `08` แล้ว (Q43 ✅) |
 
@@ -115,7 +115,7 @@
           → ผลไม่ผ่านตรวจ (E5) หรือความมั่นใจต่ำ → ยกระดับไป CLI หลัก ครั้งเดียว (cascade แบบ FrugalGPT)
 ```
 - ผู้ใช้กำหนดใน ตั้งค่า → agent: `หลัก` 1 ตัว · `ประหยัด` 0–1 ตัว (ตัวเดียวกันแต่โมเดล/effort ต่างก็ได้) · ไม่ตั้ง "ประหยัด" = ใช้หลักทุกงาน (เหมือนเดิม)
-- กฎตายตัว + คะแนน `route` — **ไม่ train router** (ponytail: เปลี่ยนเป็น RouteLLM-style เมื่อมีข้อมูลผล accept/reject มากพอ) ❓ Q63
+- กฎตายตัว + คะแนน `route` — **ไม่ train router** (ponytail: เปลี่ยนเป็น RouteLLM-style เมื่อมีข้อมูลผล accept/reject มากพอ) Q63 ✅
 - ทุกการตัดสินบันทึก "ใครทำ" ใน `runs/*.ndjson` (หลัก UX ข้อ 6)
 
 ### 3.3 ส่งเฉพาะที่ต้องใช้ (E2) — ต่อ `12` §3
@@ -128,7 +128,7 @@
 | ข้อเท็จจริงสำคัญวางหัว/ท้าย ไม่วางกลาง | Lost in the Middle | ตัวประกอบ prompt |
 | ประกาศเฉพาะ tool ของ recipe นั้น | RAG-MCP | gateway (`tools/list` ต่อ job) |
 
-### 3.4 บีบ prompt (E2) — `ZIZ-M-compress` (ทางเลือก · ❓ Q61)
+### 3.4 บีบ prompt (E2) — `ZIZ-M-compress` (ทางเลือก · Q61 ✅)
 
 - โมเดลแบบ LLMLingua-2 (token classifier) บีบ **เฉพาะ "บริบทประกอบ"** (สรุปบทก่อนหน้า · คำอธิบาย entity เดิม) — **ไม่บีบ** ข้อความที่ agent ต้อง quote กลับ และไม่บีบคำสั่ง
 - เป้า: ลดโทเคนเข้าของบริบทประกอบ ≥ 40 % โดย recall ตัวละครหลักลดไม่เกิน 1 จุด (fixture `novel-*`) · ไม่ผ่าน = ไม่ทำ
@@ -138,7 +138,7 @@
 
 - gateway เห็นทุก tool call ของ job · ผล `ziz_source_read`/`ziz_index_search` ที่เก่ากว่า **3 รอบ** ในรอบถัดไป: Z.I.Z **ไม่ได้คุมประวัติแชตของ CLI โดยตรง** →
   ทำได้เฉพาะ (ก) แบ่ง job เป็น **session สั้นต่อ chunk/ขั้น** (map/reduce ของ `04` §5 ทำอยู่แล้ว — session ใหม่ = ประวัติว่าง) และ (ข) สถานะสะสมเก็บใน `ziz_findings_query` ไม่ใช่ในแชต
-- นี่คือรูปแบบ masking ที่ถูกที่สุด: agent ไม่ต้องลากผลเก่า เพราะเริ่ม session ใหม่ทุกขั้นแล้วดึงสิ่งที่ต้องใช้จาก gateway · ❓ Q64 (session ต่อขั้น vs ต่อ job — ขัดกับ E3 cache)
+- นี่คือรูปแบบ masking ที่ถูกที่สุด: agent ไม่ต้องลากผลเก่า เพราะเริ่ม session ใหม่ทุกขั้นแล้วดึงสิ่งที่ต้องใช้จาก gateway · Q64 ✅ (session ต่อขั้น vs ต่อ job — ขัดกับ E3 cache)
 
 ### 3.6 จัด prompt ให้ cache ได้ (E3)
 
