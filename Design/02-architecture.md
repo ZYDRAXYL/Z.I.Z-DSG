@@ -285,7 +285,7 @@ ZYDRAXYL/
 **ทิศของ dependency** (ห้ามวน): `ZIZ-PROTOCOLS` ← ทุก repo · `ZIZ-MODELS` ← แอป + `ZIZ-M-*` + `ZIZ-LINK` (section extensions) ·
 แอป Z.I.Z ไม่ import โค้ดของ `ZIZ-LINK`/`ZIZ-SUGGEST` — คุยผ่าน protocol เท่านั้น · ทุก repo vendor `ZIZ-PROTOCOLS` ด้วย tag + `eco.lock.json` แบบเดียวกับ `vendor/eco/` (ECO-R32)
 
-**ทุก repo:** public (Q12 ✅) · ชื่อขึ้นต้น `ZIZ-`/`ziz-` · มี `PROVENANCE.json` ถ้ายกโค้ดมา · release ด้วย tag `v*` + checksum · ❓ Q59–Q60
+**ทุก repo:** public (Q12 ✅) · ชื่อขึ้นต้น `ZIZ-`/`ziz-` · มี `PROVENANCE.json` ถ้ายกโค้ดมา · release ด้วย tag `v*` + checksum · Q59–Q60 ✅
 
 ## 7. ข้อมูลขณะรัน (Windows)
 
