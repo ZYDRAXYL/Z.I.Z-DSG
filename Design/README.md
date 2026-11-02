@@ -29,7 +29,7 @@ Z.I.Z คือ "ห้องควบคุม" ของ Zydraxyl Eco: เป�
 | [`11-link-extension-terminal.md`](./11-link-extension-terminal.md) | **v0.3** Z.I.Z Link: extension ในแอป Eco ที่ติดตั้งอัตโนมัติเมื่อมีทั้งสองฝั่ง (ถาม/ค้น/สรุปไว/เปิด Z.I.Z) · หน้าต่างแชต/Terminal ต่อ CLI ในเครื่อง |
 | [`12-suggestions-read-scope.md`](./12-suggestions-read-scope.md) | **v0.4** Suggestion 3 รูปแบบ (Tool · Inline · Guide) 3 ชั้น (กฎมากับแอป · โมเดลของ Z.I.Z · CLI ที่เปิดเองในหน้า Node) · ขอบเขตการอ่านของ AI ภาพรวม / Secured / Opened |
 | [`13-token-economy-research.md`](./13-token-economy-research.md) | **v0.5** งานวิจัย paper + open source: assistant ฟรี/ถูกบน CLI ของผู้ใช้ · 6 ชั้นการประหยัด (ในเครื่อง → route → ส่งน้อย → cache → ตอบสั้น → ตรวจแทนทำซ้ำ) · ภาษาไทยจ่ายโทเคนแพงกว่า |
-| [`prototype/ziz-ui.html`](./prototype/ziz-ui.html) | prototype คลิกได้ของ Home / Mirror / Spaces (เปิดในเบราว์เซอร์) |
+| [`prototype/ziz-ui.html`](./prototype/ziz-ui.html) | prototype คลิกได้ของ Home / Mirror / Spaces + แผง "AI อ่านได้" (ภาพรวม/Secured/Opened · Suggestion S0–S2 · กล่องขออ่านนอกขอบเขต) (เปิดในเบราว์เซอร์) |
 
 ## ลำดับการอ่าน
 

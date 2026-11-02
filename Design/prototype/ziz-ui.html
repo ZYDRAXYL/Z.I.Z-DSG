@@ -98,6 +98,21 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:gra
 .sugg p{margin:0}
 .src{font:11px var(--f-mono);color:var(--t2)}
 .sugg .row{display:flex;gap:6px;flex-wrap:wrap}
+/* AI access (12 §4) */
+.access{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;display:grid;gap:8px;background:var(--surface2)}
+.access .seg{width:100%} .access .seg button{flex:1;padding:5px 4px;white-space:nowrap;font-size:13px}
+.access p{margin:0}
+.roots{display:grid;gap:2px;font-size:13px} .roots label{display:flex;gap:8px;align-items:center}
+.roots label.off{color:var(--t2)}
+.tier{display:flex;align-items:center;gap:8px;font-size:13px;flex-wrap:wrap}
+.tier b{font:600 11px var(--f-mono);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.tier .sp{flex:1}
+.warnline{color:var(--warn);font-size:12.5px}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--t1);padding:16px 18px;max-width:min(460px,calc(100% - 32px));box-shadow:0 12px 40px rgba(0,0,0,.4)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{font:600 16px var(--f-display);margin:0 0 10px}
+dialog .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.quote{border-left:3px solid var(--line);padding:4px 10px;color:var(--t2);font-size:13px;margin:8px 0}
 
 /* mirror */
 #v-mirror{grid-template-rows:auto 1fr auto}
@@ -303,6 +318,13 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:gra
   </footer>
 </div>
 <div class="toast" id="toast" hidden role="status"></div>
+<dialog id="scopeDlg" aria-labelledby="scopeDlgT">
+  <h2 id="scopeDlgT">Claude Code ขออ่านนอกขอบเขต</h2>
+  <dl class="kv"><dt>โฟลเดอร์</dt><dd id="sdPath"></dd><dt>ขนาด</dt><dd class="num" id="sdSize"></dd></dl>
+  <div class="quote"><span class="src">เหตุผลจาก agent — ข้อมูล ไม่ใช่คำสั่ง</span><br><span id="sdWhy"></span></div>
+  <div class="row"><button class="btn" data-sd="once">อนุญาตครั้งนี้</button><button class="btn" data-sd="job">อนุญาตจนจบงาน</button>
+  <button class="btn" data-sd="perm">เพิ่มเข้าขอบเขตถาวร</button><button class="btn primary" data-sd="deny" autofocus>ปฏิเสธ</button></div>
+</dialog>
 
 <script>
 // ---------- data (example project "Moonfall"; numbers are illustrative) ----------
@@ -333,6 +355,18 @@ const PATTERNS={
  our:[{seq:['สร้างงาน "ตรวจคำผิด"','มอบให้ Z.I.Z'],n:6,min:2,params:['ช่วงบท']}],
  dracon:[],qzl:[],tia:[]
 };
+
+// ---------- AI read scope (12 §3) + suggestion tiers (12 §2) + token ledger (13 §3.9) ----------
+// level: 'overview' = Z.I.Z reads relation/status only, AI reads nothing · 'secured' = only roots · 'opened' = whole project
+const SCOPE={level:'secured', roots:new Set(['baha:0','ryu:0']), job:new Set()};  // Q53 ✅: first AI job → Secured on last folder
+const FOLDER=(a,j)=>a.name+'/'+a.groups[j][0];
+const TOK=g=>Math.round(g[1]*620);            // ponytail: fake ≈ tokens per group for the demo (13 §2.6: measure per CLI)
+const S2={}; APPS.forEach(a=>S2[a.id]={on:false,cap:''});   // Q55 ✅: cap optional, default none
+const LEDGER={local:9, cli:5, tok:41200, cache:78};
+function inScope(n){ if(SCOPE.level==='opened') return true; if(SCOPE.level==='overview') return false;
+  if(n.kind==='group') return SCOPE.roots.has(n.id)||SCOPE.job.has(n.id);
+  if(n.kind==='app') return n.app.groups.some((g,j)=>SCOPE.roots.has(n.id+':'+j)||SCOPE.job.has(n.id+':'+j));
+  return true; }
 
 // ---------- utils ----------
 const $=s=>document.querySelector(s);
@@ -403,21 +437,23 @@ function draw(now){
     ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
   });
   // pulse: agent reading BahaMyth through the gateway
-  if(!reduced){ ['baha','ryu'].forEach((id,k)=>{ const A=P.core,B=P[id]; const f=((t*0.6+k*0.5)%1);
+  if(!reduced){ ['baha','ryu'].filter(id=>inScope(byId[id])).forEach((id,k)=>{ const A=P.core,B=P[id]; const f=((t*0.6+k*0.5)%1);
     ctx.beginPath(); ctx.arc(A.X+(B.X-A.X)*f,A.Y+(B.Y-A.Y)*f,3.5,0,7); ctx.fillStyle=accent; ctx.fill(); }); }
   // nodes, far to near
   const order=nodes.slice().sort((a,b)=>P[b.id].Z-P[a.id].Z);
   ctx.textAlign='center'; ctx.textBaseline='top';
   order.forEach(n=>{ const p=P[n.id], r=Math.max(3,n.r*p.S); const c=n.kind==='core'?accent:n.kind==='warn'?danger:appColor(n);
+    const dim=(n.kind==='group'||n.kind==='app')&&!inScope(n); ctx.globalAlpha=1; if(dim) ctx.save(), ctx.globalAlpha=.32;
     ctx.beginPath();
     if(n.kind==='core'){ ctx.save(); ctx.translate(p.X,p.Y); ctx.rotate(Math.PI/4); ctx.rect(-r*.8,-r*.8,r*1.6,r*1.6); ctx.restore(); }
     else ctx.arc(p.X,p.Y,r,0,7);
     if(n.kind==='app' && !n.app.live){ ctx.fillStyle=css('--surface'); ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle=c; ctx.stroke(); }
     else if(n.kind==='sugg'){ ctx.fillStyle=c; ctx.globalAlpha=.25+.15*Math.sin(t*2.4); ctx.arc(p.X,p.Y,r*1.7,0,7); ctx.fill(); ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(p.X,p.Y,r*.8,0,7); ctx.fillStyle=c; ctx.fill(); }
-    else { ctx.fillStyle=c; ctx.globalAlpha=n.kind==='group'?.75:1; ctx.fill(); ctx.globalAlpha=1; }
+    else { const ga=ctx.globalAlpha; ctx.fillStyle=c; ctx.globalAlpha=ga*(n.kind==='group'?.75:1); ctx.fill(); ctx.globalAlpha=ga; }
     if(n.id===sel){ ctx.beginPath(); ctx.arc(p.X,p.Y,r+6,0,7); ctx.strokeStyle=t1; ctx.lineWidth=2; ctx.stroke(); }
     if(n.kind!=='sugg'){ ctx.fillStyle=n.kind==='group'?t2:t1; ctx.font=(n.kind==='app'||n.kind==='core'?'600 13px ':'12px ')+css('--f-body');
-      ctx.fillText(n.label+(n.kind==='app'?(n.app.live?' ●':' ○'):''),p.X,p.Y+r+5); }
+      ctx.fillText(n.label+(n.kind==='app'?(n.app.live?' ●':' ○'):'')+(dim&&n.kind==='group'?' 🔒':''),p.X,p.Y+r+5); }
+    if(dim) ctx.restore();
     n._p=p; n._r=r;
   });
   { const p=P.core; ctx.fillStyle=css('--on-accent'); ctx.font='600 11px '+css('--f-mono'); ctx.textBaseline='middle'; ctx.fillText('>_',p.X,p.Y); }
@@ -440,7 +476,9 @@ function select(id){ sel=id; const n=byId[id], d=$('#detail');
   if(n.kind==='core'){ d.innerHTML=`<h2><span style="color:var(--accent)">◆</span> Z.I.Z assistant</h2>
     <dl class="kv"><dt>agent</dt><dd>Claude Code · พร้อม</dd><dt>โมเดลเล็ก</dt><dd>embed 1.2.4 · ner 1.3.0 · route 1.0.2</dd><dt>งาน</dt><dd>novel→baha · บท 8/12</dd></dl>
     <h3>วันนี้</h3><div class="sugg"><p>คำแนะนำรวม <b class="num">8</b> รายการใน 4 แอป</p><div class="row"><button class="btn" data-go="spaces">เปิด Spaces</button></div></div>
-    <div class="sugg"><p>ส่งให้ agent น้อยลงด้วยโมเดลเล็ก: ข้าม <b class="num">41</b> chunk ที่ไม่เกี่ยว</p><span class="src">route 1.0.2 · ดูรายการที่ข้ามได้</span></div>`; return; }
+    <div class="sugg"><p>ส่งให้ agent น้อยลงด้วยโมเดลเล็ก: ข้าม <b class="num">41</b> chunk ที่ไม่เกี่ยว</p><span class="src">route 1.0.2 · ดูรายการที่ข้ามได้</span></div>
+    <h3>AI อ่านได้</h3>${accessHTML(null)}
+    <h3>โทเคนวันนี้</h3><div class="sugg"><p>${LEDGER.local+LEDGER.cli} งาน · ในเครื่อง <b class="num">${LEDGER.local}</b> (0 โทเคน) · CLI <b class="num">${LEDGER.cli}</b> (<span class="num">≈${(LEDGER.tok/1000).toFixed(1)}k</span> · cache ${LEDGER.cache} %)</p><span class="src">สมุดโทเคน · ค่าประมาณ ≈ (13 §3.9)</span></div>`; return; }
   if(n.kind==='warn'){ d.innerHTML=`<h2>⚠ ลิงก์เสีย 3</h2><p class="meta">ref ที่ eco_get ตอบว่าไม่พบ</p>
     <div class="sugg"><p>BahaMyth → DraconDex หน้า "แผนที่ทวีป" ถูกลบ</p><span class="src">Insight F24</span></div>`; return; }
   const a=n.app, list=SUGG[a.id]||[];
@@ -449,13 +487,53 @@ function select(id){ sel=id; const n=byId[id], d=$('#detail');
     <dt>กลุ่ม</dt><dd>${a.groups.map(g=>esc(g[0])+' '+g[1]).join(' · ')}</dd></dl>
     <h3>คำแนะนำ ${list.length}</h3>
     ${list.length?list.map(s=>`<div class="sugg"><p>✦ ${esc(s.t)}</p><span class="src">ที่มา: ${esc(s.s)}</span>${s.a?`<div class="row"><button class="btn" data-go="${s.a==='mirror'?'mirror':'spaces'}">${s.a==='mirror'?'เปิดใน Mirror':'ทำเป็น recipe'}</button></div>`:''}</div>`).join(''):'<p class="meta">ยังไม่มีคำแนะนำสำหรับแอปนี้</p>'}
+    <h3>AI อ่านได้</h3>${accessHTML(a)}
+    <h3>Suggestion</h3>${tiersHTML(a)}
     <button class="btn" data-space="${a.id}">เปิด Space ของ ${esc(a.name)} →</button>`;
 }
+function accessHTML(a){
+  const L=SCOPE.level, lvl=(k,t)=>`<button data-level="${k}" aria-pressed="${L===k}">${t}</button>`;
+  const apps=a?[a]:APPS.filter(x=>x.live);
+  let body;
+  if(L==='overview') body=`<p class="meta">AI ยังไม่ได้อ่านอะไร — Z.I.Z อ่านแค่ relation · status · จำนวน เพื่อแสดงผลบนหน้านี้</p>`;
+  else if(L==='opened') body=`<p class="meta">AI อ่านได้ทั้งโปรเจกต์ Moonfall (ไม่ข้ามไปโปรเจกต์อื่น)</p>`;
+  else { let n=0,t=0; const rows=apps.map(x=>x.groups.map((g,j)=>{ const id=x.id+':'+j, on=SCOPE.roots.has(id), jb=SCOPE.job.has(id); if(on||jb){n++;t+=TOK(g);}
+      return `<label class="${on||jb?'':'off'}"><input type="checkbox" data-root="${id}" ${on?'checked':''}> ${esc(FOLDER(x,j))}${jb?' <span class="tag">จนจบงาน</span>':''}</label>`; }).join('')).join('');
+    body=`<div class="roots" role="group" aria-label="โฟลเดอร์ที่ AI อ่านได้">${rows}</div>
+      <p class="meta"><span class="num">${n}</span> โฟลเดอร์ · ≈<span class="num">${(t/1000).toFixed(1)}k</span> โทเคนถ้าอ่านทั้งหมด</p>
+      <div class="row"><button class="btn" data-demo="ask">จำลอง: agent ขออ่านนอกขอบเขต</button></div>`; }
+  return `<div class="access"><div class="seg" role="group" aria-label="ระดับการอ่านของ AI">${lvl('overview','◇ ภาพรวม')}${lvl('secured','🔒 Secured')}${lvl('opened','🔓 Opened')}</div>${body}</div>`;
+}
+function tiersHTML(a){ const s=S2[a.id], noAI=SCOPE.level==='overview';
+  return `<div class="access">
+    <div class="tier"><b>S0</b> กฎของแอป <span class="sp"></span><span class="dot"></span> ทำงาน</div>
+    <div class="tier"><b>S1</b> โมเดลของ Z.I.Z <span class="sp"></span><span class="src">habit · embed · ner</span></div>
+    <div class="tier"><b>S2</b> Claude Code <span class="sp"></span><label><input type="checkbox" data-s2="${a.id}" ${s.on&&!noAI?'checked':''} ${noAI?'disabled':''}> เปิด</label></div>
+    ${noAI?'<p class="meta">S2 ใช้ไม่ได้ในโหมดภาพรวม (AI ไม่ได้อ่านอะไร)</p>':''}
+    ${s.on&&!noAI?`<label class="meta">เพดาน/วัน (ไม่บังคับ): <input data-cap="${a.id}" value="${esc(s.cap)}" placeholder="ไม่ตั้ง" size="8" inputmode="numeric" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;color:var(--t1);padding:2px 6px"> คำขอ</label>
+      <p class="meta">วันนี้ <span class="num">3</span>${s.cap?'/'+esc(s.cap):''} คำขอ · ≈<span class="num">6.4k</span> โทเคน</p>`:''}
+    <p class="warnline">⚠ S2 ใช้โทเคนของคุณจริง · เปิดได้ที่หน้านี้เท่านั้น</p></div>`; }
+const DEMO_ASK={app:'baha',j:1,why:'ต้องเช็กว่าอารินเคยไปที่ "หอคอยเงา" หรือยัง'};
+document.addEventListener('click',e=>{
+  const lv=e.target.closest('[data-level]'); if(lv){ SCOPE.level=lv.dataset.level; select(sel); toast({overview:'◇ ภาพรวม — AI ไม่ได้อ่านอะไร',secured:'🔒 Secured — อ่านเฉพาะโฟลเดอร์ที่เลือก',opened:'🔓 Opened — อ่านได้ทั้งโปรเจกต์'}[SCOPE.level]); return; }
+  if(e.target.closest('[data-demo="ask"]')){ const a=APPS.find(x=>x.id===DEMO_ASK.app), id=a.id+':'+DEMO_ASK.j;
+    if(SCOPE.roots.has(id)||SCOPE.job.has(id)){ toast('โฟลเดอร์นี้อยู่ในขอบเขตแล้ว — ลองเอาติ๊ก '+FOLDER(a,DEMO_ASK.j)+' ออกก่อน'); return; }
+    $('#sdPath').textContent=FOLDER(a,DEMO_ASK.j); $('#sdSize').textContent=a.groups[DEMO_ASK.j][1]+' ไฟล์ · ≈'+(TOK(a.groups[DEMO_ASK.j])/1000).toFixed(1)+'k โทเคน';
+    $('#sdWhy').textContent='"'+DEMO_ASK.why+'"'; $('#scopeDlg').showModal(); return; }
+  const sd=e.target.closest('[data-sd]'); if(sd){ const id=DEMO_ASK.app+':'+DEMO_ASK.j, k=sd.dataset.sd; $('#scopeDlg').close();
+    if(k==='job') SCOPE.job.add(id); if(k==='perm') SCOPE.roots.add(id);
+    toast({once:'อนุญาตครั้งนี้ — ไม่เปลี่ยนขอบเขต',job:'อนุญาตจนจบงาน',perm:'เพิ่มเข้าขอบเขตถาวรแล้ว · Undo ได้ในประวัติ',deny:'ปฏิเสธ — agent ตอบจากขอบเขตเดิมเท่านั้น'}[k]); select(sel); }
+});
+document.addEventListener('change',e=>{
+  const r=e.target.closest('[data-root]'); if(r){ r.checked?SCOPE.roots.add(r.dataset.root):SCOPE.roots.delete(r.dataset.root); select(sel); return; }
+  const s2=e.target.closest('[data-s2]'); if(s2){ S2[s2.dataset.s2].on=s2.checked; select(sel); if(s2.checked) toast('เปิด S2 แล้ว — แนะนำลึกเมื่อคุณหยุดนิ่ง ≥ 20 วินาที · ใช้โทเคนของคุณ'); return; }
+  const c=e.target.closest('[data-cap]'); if(c){ S2[c.dataset.cap].cap=c.value.replace(/\D/g,''); select(sel); }
+});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-space]'); if(b){ curSpace=b.dataset.space; renderSpaces(); go('spaces'); }});
 
 // ---------- list view (accessible alternative) ----------
 $('#listBtn').onclick=()=>{ const lv=$('#listview'), on=lv.hidden; lv.hidden=!on; $('#listBtn').setAttribute('aria-pressed',on);
-  if(on){ lv.innerHTML='<ul><li><button data-sel="core">◆ Z.I.Z assistant</button><ul>'+APPS.map(a=>`<li><button data-sel="${a.id}">${a.live?'●':'○'} ${esc(a.name)} · ${a.count}${a.sugg?' · ✦ '+a.sugg:''}</button><ul>${a.groups.map(g=>`<li>${esc(g[0])} ${g[1]}</li>`).join('')}</ul></li>`).join('')+'<li><button data-sel="warn">⚠ ลิงก์เสีย 3</button></li></ul></li></ul>'; } };
+  if(on){ lv.innerHTML='<ul><li><button data-sel="core">◆ Z.I.Z assistant</button><ul>'+APPS.map(a=>`<li><button data-sel="${a.id}">${a.live?'●':'○'} ${esc(a.name)} · ${a.count}${a.sugg?' · ✦ '+a.sugg:''}</button><ul>${a.groups.map((g,j)=>`<li>${esc(g[0])} ${g[1]} · ${inScope(byId[a.id+':'+j])?'AI อ่านได้':'AI อ่านไม่ได้ 🔒'}</li>`).join('')}</ul></li>`).join('')+'<li><button data-sel="warn">⚠ ลิงก์เสีย 3</button></li></ul></li></ul>'; } };
 $('#listview').addEventListener('click',e=>{const b=e.target.closest('[data-sel]'); if(b) select(b.dataset.sel);});
 $('#composer').onsubmit=e=>{e.preventDefault(); const v=$('#ask').value.trim(); if(v){toast('ส่งให้ Claude Code: '+v.slice(0,40)); $('#ask').value='';}};
 
