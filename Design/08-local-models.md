@@ -26,11 +26,11 @@ CLI agent ของผู้ใช้ (Claude Code / Codex / Gemini) เก่�
 
 | id (= ชื่อ repo) | งาน | รูปแบบ | ขนาดเป้า | แบ่งภาระอะไรจาก CLI |
 |---|---|---|---|---|
-| **`ZIZ-M-embed`** | เวกเตอร์ความหมาย TH+EN (ค้นด้วยความหมาย · จับคู่ชื่อ/alias · หา entity เดิมในแอป) | model2vec static table, i8 + scale ต่อแถว (แบบ Kensaku) — ไม่มี neural graph ตอน query | ≈ 15–30 MB (ตัด vocab เหลือ TH+EN — verify) | agent ไม่ต้องเรียก `ziz_app_search` หลายรอบเพื่อหา "ตัวละครนี้มีอยู่แล้วไหม" |
-| **`ZIZ-M-ner`** | ติดป้ายชื่อเฉพาะระดับตัวอักษร: บุคคล · สถานที่ · องค์กร · สิ่งของ · เวลา | char-level tagger (distill จากโมเดลไทยใหญ่) ONNX int8 | ≈ 10–25 MB | ทำ pre-pass หา "รายชื่อผู้สมัคร + ตำแหน่งที่พบ + จำนวนครั้ง" ให้ agent → agent ยืนยัน/รวมชื่อ/เขียนคำอธิบาย แทนการอ่านหาเองทั้งเล่ม |
-| **`ZIZ-M-route`** | จัดประเภท chunk (บทสนทนา · บรรยาย · ฉากต่อสู้ · ข้อความนอกเรื่อง/สารบัญ · **สงสัยเป็นคำสั่งแฝง**) + คะแนนความเกี่ยวกับ recipe | linear head บนเวกเตอร์ของ `ZIZ-M-embed` | < 1 MB | ข้าม chunk ที่ไม่เกี่ยว (สารบัญ/คำนำ/โฆษณาในไฟล์) · ช่วยตัวตรวจ injection (`04` §7.2) |
-| **`ZIZ-M-habit`** | จับรูปแบบที่ผู้ใช้ทำซ้ำ + จัดอันดับคำแนะนำ (`10-ui-home-mirror-spaces.md` §4) | **ไม่ใช่ neural**: sequence mining (n-gram 2–6 ของ action) + Markov ลำดับถัดไป · pack มีแค่ vocab ของ action ต่อแอป + ค่าเริ่มต้น | < 1 MB (สถานะที่เรียนรู้อยู่ในเครื่องผู้ใช้) | agent ไม่ต้องถูกเรียกเพื่อ "เดา" ว่าผู้ใช้จะทำอะไรต่อ |
-| **`ZIZ-M-gen`** (v1 · **opt-in** — Q31 ✅) | สรุปบท/synopsis สั้น · เขียน "สรุปไว" ของ Link เป็นย่อหน้า | LLM เล็ก ~0.5B GGUF Q4 · **llama.cpp** binary แยก process มากับ pack · คุยผ่าน stdio (Q43 ✅) | ≈ 300–400 MB | งานที่หนักที่สุดของ agent · ไม่ติดตั้งเป็นค่าเริ่ม · ผลทุกครั้งติดป้าย "สรุปโดย gen (โมเดลเล็ก)" และต้องผ่านตรวจ quote ก่อนกลายเป็นข้อเสนอ · ถ้าคะแนน eval ภาษาไทยต่ำกว่าเกณฑ์ ปุ่มติดตั้งแสดงคำเตือนคุณภาพ |
+| **`Z.I.Z-MDL-Embed`** | เวกเตอร์ความหมาย TH+EN (ค้นด้วยความหมาย · จับคู่ชื่อ/alias · หา entity เดิมในแอป) | model2vec static table, i8 + scale ต่อแถว (แบบ Kensaku) — ไม่มี neural graph ตอน query | ≈ 15–30 MB (ตัด vocab เหลือ TH+EN — verify) | agent ไม่ต้องเรียก `ziz_app_search` หลายรอบเพื่อหา "ตัวละครนี้มีอยู่แล้วไหม" |
+| **`Z.I.Z-MDL-NER`** | ติดป้ายชื่อเฉพาะระดับตัวอักษร: บุคคล · สถานที่ · องค์กร · สิ่งของ · เวลา | char-level tagger (distill จากโมเดลไทยใหญ่) ONNX int8 | ≈ 10–25 MB | ทำ pre-pass หา "รายชื่อผู้สมัคร + ตำแหน่งที่พบ + จำนวนครั้ง" ให้ agent → agent ยืนยัน/รวมชื่อ/เขียนคำอธิบาย แทนการอ่านหาเองทั้งเล่ม |
+| **`Z.I.Z-MDL-Route`** | จัดประเภท chunk (บทสนทนา · บรรยาย · ฉากต่อสู้ · ข้อความนอกเรื่อง/สารบัญ · **สงสัยเป็นคำสั่งแฝง**) + คะแนนความเกี่ยวกับ recipe | linear head บนเวกเตอร์ของ `Z.I.Z-MDL-Embed` | < 1 MB | ข้าม chunk ที่ไม่เกี่ยว (สารบัญ/คำนำ/โฆษณาในไฟล์) · ช่วยตัวตรวจ injection (`04` §7.2) |
+| **`Z.I.Z-MDL-Habit`** | จับรูปแบบที่ผู้ใช้ทำซ้ำ + จัดอันดับคำแนะนำ (`10-ui-home-mirror-spaces.md` §4) | **ไม่ใช่ neural**: sequence mining (n-gram 2–6 ของ action) + Markov ลำดับถัดไป · pack มีแค่ vocab ของ action ต่อแอป + ค่าเริ่มต้น | < 1 MB (สถานะที่เรียนรู้อยู่ในเครื่องผู้ใช้) | agent ไม่ต้องถูกเรียกเพื่อ "เดา" ว่าผู้ใช้จะทำอะไรต่อ |
+| **`Z.I.Z-MDL-Gen`** (v1 · **opt-in** — Q31 ✅) | สรุปบท/synopsis สั้น · เขียน "สรุปไว" ของ Link เป็นย่อหน้า | LLM เล็ก ~0.5B GGUF Q4 · **llama.cpp** binary แยก process มากับ pack · คุยผ่าน stdio (Q43 ✅) | ≈ 300–400 MB (≤ 800 MB ถ้าฐาน Typhoon 2 1B ชนะ eval ไทย — Q62 ✅ `13` §2.3) | งานที่หนักที่สุดของ agent · ไม่ติดตั้งเป็นค่าเริ่ม · ผลทุกครั้งติดป้าย "สรุปโดย gen (โมเดลเล็ก)" และต้องผ่านตรวจ quote ก่อนกลายเป็นข้อเสนอ · ถ้าคะแนน eval ภาษาไทยต่ำกว่าเกณฑ์ ปุ่มติดตั้งแสดงคำเตือนคุณภาพ |
 
 > ponytail: ไม่มีโมเดลตัดคำไทยแยก — index ใช้ n-gram (`09` §3.2) และ NER เป็น char-level จึงไม่ต้องตัดคำ ·
 > ไม่มี reranker — RRF พอ (Kensaku §2: cross-encoder 30–60 ms ไม่คุ้ม) · เพิ่มเมื่อวัดได้ว่าขาด
@@ -100,14 +100,15 @@ ZIZ.exe (main)
 
 ```
 ZYDRAXYL/
-  Z.I.Z-DSG  (→ Z.I.Z)     แอป · รู้จัก ABI ที่รองรับ · ฝัง public key ของ catalog
-  ZIZ-MODELS               catalog กลาง: catalog.json (ลงลายเซ็น) · ABI spec · เครื่องมือ pack/verify · ชุด eval กลาง
-  ZIZ-M-embed              ┐
-  ZIZ-M-ner                │ repo ต่อโมเดล: train · export · eval · release pack
-  ZIZ-M-route              │
-  ZIZ-M-habit              ┘
-  ziz-index                daemon อ่านไฟล์เร็ว (`09-fast-read-index.md`) — แยก repo เพราะแอป Eco อื่นใช้ร่วม
+  Z.I.Z-EXE              แอป · รู้จัก ABI ที่รองรับ · ฝัง public key ของ catalog
+  Z.I.Z-MDL              catalog กลาง: catalog.json (ลงลายเซ็น) · ABI spec · เครื่องมือ pack/verify · ชุด eval กลาง
+  Z.I.Z-MDL-Embed        ┐
+  Z.I.Z-MDL-NER          │ repo ต่อโมเดล: train · export · eval · release pack
+  Z.I.Z-MDL-Route        │ (+ Z.I.Z-MDL-Gen opt-in · Z.I.Z-MDL-Compress later)
+  Z.I.Z-MDL-Habit        ┘
+  Z.I.Z-IDX              daemon `ziz-index` อ่านไฟล์เร็ว (`09-fast-read-index.md`) — แยก repo เพราะแอป Eco อื่นใช้ร่วม
 ```
+> แผนที่ repo ทั้งหมด (รวม `Z.I.Z-LNK` · `Z.I.Z-SGT` · `Z.I.Z-SPC`) และเกณฑ์แยก repo: `02` §6.1
 
 **ทำไมแยก repo ต่อโมเดล:** รอบ release ไม่ผูกกับแอป (train ใหม่ไม่ต้องออกเวอร์ชัน Z.I.Z) · licence ของโมเดลฐานต่างกัน ·
 ประวัติ/ขนาดไฟล์ไม่ปน repo แอป · CI ของโมเดลใช้ Python/GPU ได้โดยไม่ลาก CI ของแอป
@@ -115,7 +116,7 @@ ZYDRAXYL/
 ### 5.1 โครง repo โมเดล
 
 ```
-ZIZ-M-ner/
+Z.I.Z-MDL-NER/
   pack.json            ← ข้อมูลของ pack (§6.1) — แหล่งความจริงเดียวของ id/version/abi
   MODEL_CARD.md        ← ข้อมูลฝึก (ไม่มีข้อมูลผู้ใช้) · ข้อจำกัด · ภาษา · licence ของโมเดลฐาน
   LICENSE  THIRD-PARTY.md
@@ -137,8 +138,8 @@ ZIZ-M-ner/
 | `route/1` | `Float32[256]` จาก `embed/1` | `{ kind: {...prob}, relevance: {recipeId: score}, injection: score }` |
 | `habit/1` | ลำดับ action token (`10` §4.2) | `[{pattern, support, nextAction, score}]` |
 
-- ABI อยู่ใน `ZIZ-MODELS/abi/*.md` · แอปประกาศ ABI ที่รองรับ: `{ "embed": [1], "ner": [1], "route": [1], "habit": [1] }`
-- `route/1` **ขึ้นกับ** `embed/1` รุ่นที่ใช้ฝึก → `pack.json.dependsOn: { "ZIZ-M-embed": ">=1.2.0 <1.3.0" }` · ตัวติดตั้งแก้ dependency ให้
+- ABI อยู่ใน `Z.I.Z-MDL/abi/*.md` · แอปประกาศ ABI ที่รองรับ: `{ "embed": [1], "ner": [1], "route": [1], "habit": [1] }`
+- `route/1` **ขึ้นกับ** `embed/1` รุ่นที่ใช้ฝึก → `pack.json.dependsOn: { "Z.I.Z-MDL-Embed": ">=1.2.0 <1.3.0" }` · ตัวติดตั้งแก้ dependency ให้
 
 ---
 
@@ -157,7 +158,7 @@ ziz-m-ner-1.3.0.zizpack
 
 ```json
 {
-  "id": "ZIZ-M-ner", "version": "1.3.0", "abi": "ner/1",
+  "id": "Z.I.Z-MDL-NER", "version": "1.3.0", "abi": "ner/1",
   "requires": { "ziz": ">=1.2.0 <2.0.0" },
   "dependsOn": {},
   "runtime": "onnx", "cpu": { "minIsa": "sse4.2" },
@@ -177,12 +178,12 @@ tag vX.Y.Z → release.yml:
   2. รัน eval/ → ต่ำกว่า thresholds.json = ล้ม (ห้ามปล่อยโมเดลที่แย่ลง)
   3. รัน selftest บน Windows runner ด้วย onnxruntime-node รุ่นเดียวกับแอป
   4. สร้าง .zizpack + sha256 → publish release
-  5. เปิด PR เข้า ZIZ-MODELS: เพิ่ม/แก้ entry ใน catalog (id, version, channel, sha256, size, url, abi, requires, eval)
-ZIZ-MODELS (merge PR) → catalog.yml: ตรวจ entry (ดาวน์โหลด pack, เทียบ sha256, ตรวจ requires/abi/dependsOn)
+  5. เปิด PR เข้า Z.I.Z-MDL: เพิ่ม/แก้ entry ใน catalog (id, version, channel, sha256, size, url, abi, requires, eval)
+Z.I.Z-MDL (merge PR) → catalog.yml: ตรวจ entry (ดาวน์โหลด pack, เทียบ sha256, ตรวจ requires/abi/dependsOn)
                       → ลงลายเซ็น ed25519 → publish `catalog.json` + `catalog.json.sig` เป็น release asset "latest"
 ```
 
-- **กุญแจลงลายเซ็นมีที่เดียว** (secret ของ `ZIZ-MODELS`) — repo โมเดลไม่ถือกุญแจ · pack ปลอดภัยเพราะ sha256 อยู่ใน catalog ที่ลงลายเซ็น
+- **กุญแจลงลายเซ็นมีที่เดียว** (secret ของ `Z.I.Z-MDL`) — repo โมเดลไม่ถือกุญแจ · pack ปลอดภัยเพราะ sha256 อยู่ใน catalog ที่ลงลายเซ็น
 - แอปตรวจลายเซ็นด้วย `crypto.verify('ed25519', …)` ของ Node — ไม่ต้องมี dependency เพิ่ม
 - ช่อง (channel): `stable` · `beta` — entry มี `channel` · ผู้ใช้เลือกในตั้งค่า (ค่าเริ่ม stable)
 
@@ -192,10 +193,10 @@ ZIZ-MODELS (merge PR) → catalog.yml: ตรวจ entry (ดาวน์โห
 {
   "schema": 1, "generatedAt": "2026-11-01T00:00:00Z", "expires": "2026-12-01T00:00:00Z",
   "models": [
-    { "id": "ZIZ-M-ner", "version": "1.3.0", "channel": "stable", "abi": "ner/1",
+    { "id": "Z.I.Z-MDL-NER", "version": "1.3.0", "channel": "stable", "abi": "ner/1",
       "requires": { "ziz": ">=1.2.0 <2.0.0" }, "dependsOn": {},
       "size": 18501120, "sha256": "…",
-      "urls": [ "https://github.com/ZYDRAXYL/ZIZ-M-ner/releases/download/v1.3.0/ziz-m-ner-1.3.0.zizpack" ],
+      "urls": [ "https://github.com/ZYDRAXYL/Z.I.Z-MDL-NER/releases/download/v1.3.0/ziz-m-ner-1.3.0.zizpack" ],
       "notes": { "th": "แม่นขึ้นกับชื่อที่มีคำนำหน้า", "en": "…" } }
   ]
 }
@@ -211,9 +212,9 @@ ZIZ-MODELS (merge PR) → catalog.yml: ตรวจ entry (ดาวน์โห
 
 ```
 %LOCALAPPDATA%\ZIZ\models\
-  active.json                      { "ZIZ-M-ner": "1.3.0", "ZIZ-M-embed": "1.2.4", … }  ← เปลี่ยนด้วย write-tmp + rename เท่านั้น
-  ZIZ-M-ner\1.3.0\…                เวอร์ชันที่ใช้
-  ZIZ-M-ner\1.2.1\…                เวอร์ชันก่อนหน้า (เก็บไว้ 1 รุ่นเพื่อย้อน)
+  active.json                      { "Z.I.Z-MDL-NER": "1.3.0", "Z.I.Z-MDL-Embed": "1.2.4", … }  ← เปลี่ยนด้วย write-tmp + rename เท่านั้น
+  Z.I.Z-MDL-NER\1.3.0\…                เวอร์ชันที่ใช้
+  Z.I.Z-MDL-NER\1.2.1\…                เวอร์ชันก่อนหน้า (เก็บไว้ 1 รุ่นเพื่อย้อน)
   .staging\ziz-m-ner-1.4.0.zizpack.part
   catalog.json  catalog.json.sig   cache ล่าสุด
 ```

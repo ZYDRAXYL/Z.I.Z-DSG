@@ -1,6 +1,6 @@
 # Z.I.Z — เอกสารออกแบบ
 
-> **สถานะ: ออกแบบ ยังไม่สร้าง** · ร่าง v0.1 · 2026-10-18 · **v0.2 · 2026-11-01** เพิ่ม `08`–`10` (โมเดลเล็ก · อ่านไฟล์เร็ว · UI ใหม่) — Q8 เปลี่ยนคำตอบ · **v0.3** เพิ่ม `11` (Link extension · Terminal)
+> **สถานะ: ออกแบบ ยังไม่สร้าง** · ร่าง v0.1 · 2026-10-18 · **v0.2 · 2026-11-01** เพิ่ม `08`–`10` (โมเดลเล็ก · อ่านไฟล์เร็ว · UI ใหม่) — Q8 เปลี่ยนคำตอบ · **v0.3** เพิ่ม `11` (Link extension · Terminal) · **v0.4 · 2026-11-02** เพิ่ม `12` (Suggestion · ขอบเขตการอ่านของ AI) · **v0.5** เพิ่ม `13` (งานวิจัยประหยัดโทเคน)
 > app id `ziz` · format code `ziz` (ECO-I1) · Eco v1 = Windows PC เท่านั้น
 
 ## Z.I.Z คืออะไร
@@ -17,7 +17,7 @@ Z.I.Z คือ "ห้องควบคุม" ของ Zydraxyl Eco: เป�
 | ไฟล์ | เนื้อหา |
 |---|---|
 | [`01-research-summary.md`](./01-research-summary.md) | สรุปการค้นคว้า: ผลิตภัณฑ์/OSS ที่เทียบ · สิ่งที่ยืม · สิ่งที่เลี่ยง · ข้อสรุปต่อหัวข้อ |
-| [`02-architecture.md`](./02-architecture.md) | stack · process model · การขับ agent (ACP ก่อน, headless สำรอง) · gateway MCP · ชั้น · โฟลเดอร์ · ของที่ยกมาจาก DraconDex |
+| [`02-architecture.md`](./02-architecture.md) | stack · process model · **เกณฑ์แยก repo §6.1** (รายการ repo อยู่ที่ README หลัก) · การขับ agent (ACP ก่อน, headless สำรอง) · gateway MCP · ชั้น · โฟลเดอร์ · ของที่ยกมาจาก DraconDex |
 | [`03-features.md`](./03-features.md) | รายการฟีเจอร์ MVP / v1 / later พร้อมเหตุผลและที่มา |
 | [`04-internals.md`](./04-internals.md) | data model (SQLite) · รูปแบบไฟล์ · pipeline นำเข้า (DOCX/XLSX/นิยายไทยยาว) · changeset · recipe · การป้องกัน prompt injection · migration |
 | [`05-ux-ui.md`](./05-ux-ui.md) | หน้าจอ · ASCII layout · flow ทีละขั้น · onboarding · ธีม · accessibility · ตัวอักษรไทย |
@@ -27,7 +27,9 @@ Z.I.Z คือ "ห้องควบคุม" ของ Zydraxyl Eco: เป�
 | [`09-fast-read-index.md`](./09-fast-read-index.md) | **v0.2** `ziz-index` อ่านไฟล์เร็ว ปรับจาก Kensaku (tokenizer ไทย · IR cache) · ใช้ร่วมกับแอปอื่นใน Eco |
 | [`10-ui-home-mirror-spaces.md`](./10-ui-home-mirror-spaces.md) | **v0.2** Home แบบ Agent Graph 2D/3D · AI Mirror Workstation (duo view) · Spaces ต่อแอป (คำแนะนำ + รูปแบบซ้ำ) |
 | [`11-link-extension-terminal.md`](./11-link-extension-terminal.md) | **v0.3** Z.I.Z Link: extension ในแอป Eco ที่ติดตั้งอัตโนมัติเมื่อมีทั้งสองฝั่ง (ถาม/ค้น/สรุปไว/เปิด Z.I.Z) · หน้าต่างแชต/Terminal ต่อ CLI ในเครื่อง |
-| [`prototype/ziz-ui.html`](./prototype/ziz-ui.html) | prototype คลิกได้ของ Home / Mirror / Spaces (เปิดในเบราว์เซอร์) |
+| [`12-suggestions-read-scope.md`](./12-suggestions-read-scope.md) | **v0.4** Suggestion 3 รูปแบบ (Tool · Inline · Guide) 3 ชั้น (กฎมากับแอป · โมเดลของ Z.I.Z · CLI ที่เปิดเองในหน้า Node) · ขอบเขตการอ่านของ AI ภาพรวม / Secured / Opened |
+| [`13-token-economy-research.md`](./13-token-economy-research.md) | **v0.5** งานวิจัย paper + open source: assistant ฟรี/ถูกบน CLI ของผู้ใช้ · 6 ชั้นการประหยัด (ในเครื่อง → route → ส่งน้อย → cache → ตอบสั้น → ตรวจแทนทำซ้ำ) · ภาษาไทยจ่ายโทเคนแพงกว่า |
+| [`prototype/ziz-ui.html`](./prototype/ziz-ui.html) | prototype คลิกได้ของ Home / Mirror / Spaces + แผง "AI อ่านได้" (ภาพรวม/Secured/Opened · Suggestion S0–S2 · กล่องขออ่านนอกขอบเขต Z24 · เปิด S2 ครั้งแรก Z26) (เปิดในเบราว์เซอร์) |
 
 ## ลำดับการอ่าน
 

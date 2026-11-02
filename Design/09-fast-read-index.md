@@ -21,7 +21,7 @@ agent หา "เคยเขียนถึงสิ่งนี้ที่ไ
 | snapshot ในหน่วยความจำแบบ struct-of-arrays + `char_bloom` 64 bit กรองก่อน match | ARCH §4.2 | ค้นชื่อไฟล์/ชื่อบท/ชื่อ entity ใน command palette (`Ctrl+P`) ทันทีขณะพิมพ์ |
 | **Tantivy BM25** + tokenizer เอง · ห้ามใช้ `QueryParser` · สร้าง query จาก AST | ARCH §5.2 | full-text ข้ามทุกแหล่งในโปรเจกต์ · **เพิ่ม Thai** (§3.2) |
 | นโยบายเนื้อหา: เต็มถึง 1 MB · หัว 512 KB + ท้าย 512 KB · > 20 MB เก็บแค่ metadata | ARCH §5.2 | **ไม่ใช้ตรง ๆ** — นิยายต้องอ่านครบ: index เต็มทุกไฟล์ที่ผู้ใช้เพิ่มเป็น "แหล่ง" · ใช้นโยบายของ Kensaku กับไฟล์อื่นในโฟลเดอร์โปรเจกต์ |
-| semantic tier: model2vec static i8 · ~50 µs/query · exact scan ≤ 400k unit | ARCH §5.3 | = `ZIZ-M-embed` (`08` §2) · โปรเจกต์ Eco เล็กกว่า 400k unit มาก → exact scan อย่างเดียว ไม่ทำ HNSW |
+| semantic tier: model2vec static i8 · ~50 µs/query · exact scan ≤ 400k unit | ARCH §5.3 | = `Z.I.Z-MDL-Embed` (`08` §2) · โปรเจกต์ Eco เล็กกว่า 400k unit มาก → exact scan อย่างเดียว ไม่ทำ HNSW |
 | **model_id ต่อ index** — เปลี่ยนโมเดลแล้ว index เก่ายังเสิร์ฟจน index ใหม่เต็ม | ARCH §5.3 | กลไกอัปเดตโมเดล (`08` §7.3) |
 | RRF รวมผลหลาย tier + recency + frecency | ARCH §6.5 | ค้น hybrid ใน `ziz_index_search` · frecency = ไฟล์/entity ที่ผู้ใช้เปิดบ่อย |
 | extractor แยก worker · timeout · panic boundary · state `pending/ok/skipped/failed` + นับให้เห็น | ARCH §8 | ไฟล์ Word เสียไม่ทำ daemon ล้ม · "อ่านไม่ได้ 3 ไฟล์" แสดงใน Doctor |
@@ -43,7 +43,7 @@ agent หา "เคยเขียนถึงสิ่งนี้ที่ไ
 | (ข) ทำใน Node ด้วย SQLite FTS5 trigram ใน `ziz.db` | stack เดียว · น่าเบื่อ (ดี) | Kensaku วัดแล้ว FTS5 trigram ใหญ่และช้าที่ 1M doc (918 MB, 258 ms) — โปรเจกต์ Eco เล็กกว่ามากจึงอาจพอ · ต้อง verify ว่า `node-sqlite3-wasm` มี FTS5 · แอปอื่นใช้ร่วมไม่ได้ |
 | (ค) รัน Kensaku ทั้งตัวเป็น dependency | เร็วที่สุดในการเริ่ม | index ทั้งเครื่อง (เกินขอบเขต) · ไม่มี tokenizer ไทย · รอบ release ไม่ใช่ของเรา |
 
-ถ้าเลือก (ก): `vendor` ไม่ได้ — repo `ziz-index` คือ fork ที่ตัดส่วนไม่ใช้ + `PROVENANCE.json` (commit ต้นทาง · ไฟล์ · การเปลี่ยน) แบบเดียวกับ `02` §8 ·
+ถ้าเลือก (ก): `vendor` ไม่ได้ — repo `Z.I.Z-IDX` (daemon `ziz-index`) คือ fork ที่ตัดส่วนไม่ใช้ + `PROVENANCE.json` (commit ต้นทาง · ไฟล์ · การเปลี่ยน) แบบเดียวกับ `02` §8 ·
 คง `LICENSE` MIT ของ Kensaku + ใส่ชื่อผู้เขียนเดิมใน `THIRD-PARTY.md`
 
 ---
