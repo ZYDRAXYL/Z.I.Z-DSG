@@ -108,6 +108,7 @@ ZYDRAXYL/
   ZIZ-M-habit              ┘
   ziz-index                daemon อ่านไฟล์เร็ว (`09-fast-read-index.md`) — แยก repo เพราะแอป Eco อื่นใช้ร่วม
 ```
+> แผนที่ repo ทั้งหมด (รวม `ZIZ-LINK` · `ZIZ-SUGGEST` · `ZIZ-PROTOCOLS`) และเกณฑ์แยก repo: `02` §6.1
 
 **ทำไมแยก repo ต่อโมเดล:** รอบ release ไม่ผูกกับแอป (train ใหม่ไม่ต้องออกเวอร์ชัน Z.I.Z) · licence ของโมเดลฐานต่างกัน ·
 ประวัติ/ขนาดไฟล์ไม่ปน repo แอป · CI ของโมเดลใช้ Python/GPU ได้โดยไม่ลาก CI ของแอป

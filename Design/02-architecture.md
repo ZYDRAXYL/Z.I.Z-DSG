@@ -252,6 +252,41 @@ Z.I.Z-DSG/                      (❓ Q12: repo เดียว)
   .github/workflows/  ci.yml · release.yml
 ```
 
+### 6.1 แผนที่ repo ทั้งหมดของ Z.I.Z (v0.4)
+
+Z.I.Z ไม่ได้เป็นแค่แอป แต่มีชิ้นที่ไปอยู่ในแอปอื่นและชิ้นที่แอปอื่นใช้ร่วมด้วย → **มี repo มากกว่าแอป Eco ทั่วไป** (แอปอื่นส่วนใหญ่มี chain APP/EXE เดียว)
+
+```
+ZYDRAXYL/
+  Z.I.Z-DSG (→ Z.I.Z)  แอป Electron: Home · Mirror · Spaces · Terminal · gateway · scope enforcement     (§6)
+  ── ใช้ร่วม / แอปอื่นเรียกใช้ ──
+  ziz-index            Rust daemon อ่านไฟล์เร็ว · pipe ให้แอป Eco อื่น                                (`09` · Q30 ✅)
+  ZIZ-PROTOCOLS        สเปก + ชุดทดสอบ conformance: link/1.x · scope/1 · suggest-rules/1 · JSON Schema   (`11` §3.3 · `12` §3, §5)
+  ── ไปอยู่ในแอปอื่น ──
+  ZIZ-LINK             แผง Link: ui/ + adapters/<app>/ → `.zizext` ผ่าน catalog (ติดตั้งเมื่อมีทั้งสองฝั่ง)   (`11`)
+  ZIZ-SUGGEST          S0 `ziz-suggest-core` + rules/<app>/ → แอปเจ้าบ้าน vendor ตอน build installer      (`12` §2.1)
+  ── โมเดล ──
+  ZIZ-MODELS           catalog.json ที่ลงลายเซ็น (โมเดล + extensions) · ABI · pack/verify · eval กลาง      (`08` §5)
+  ZIZ-M-embed · ZIZ-M-ner · ZIZ-M-route · ZIZ-M-habit · ZIZ-M-gen                                     (`08` §2)
+```
+
+**เกณฑ์แยก repo** (ต้องเข้าอย่างน้อย 1 ข้อ ไม่เข้า = เป็นโฟลเดอร์ใน repo แอป):
+
+| เกณฑ์ | ตัวอย่าง |
+|---|---|
+| รอบ release ไม่ผูกกับแอป Z.I.Z | โมเดล (train ใหม่) · Link (อัปเดตผ่าน catalog) · Suggest (ออกตาม build ของแอปเจ้าบ้าน) |
+| แอป Eco อื่น build/ติดตั้ง/เรียกใช้มัน | `ziz-index` · `ZIZ-LINK` · `ZIZ-SUGGEST` · `ZIZ-PROTOCOLS` |
+| ภาษา/CI ต่างกันมาก | Rust (`ziz-index`) · Python + GPU (`ZIZ-M-*`) |
+| licence ต้นทางต่างกัน | Kensaku MIT (`ziz-index`) · โมเดลฐาน (`ZIZ-M-*`) |
+
+ไม่แยก (ponytail): Terminal · Mirror · Spaces · gateway · scope enforcement — อยู่ใน process ของแอปและออกพร้อมแอป ·
+แยกเมื่อมีแอปอื่นต้องใช้โค้ดชิ้นนั้นจริง
+
+**ทิศของ dependency** (ห้ามวน): `ZIZ-PROTOCOLS` ← ทุก repo · `ZIZ-MODELS` ← แอป + `ZIZ-M-*` + `ZIZ-LINK` (section extensions) ·
+แอป Z.I.Z ไม่ import โค้ดของ `ZIZ-LINK`/`ZIZ-SUGGEST` — คุยผ่าน protocol เท่านั้น · ทุก repo vendor `ZIZ-PROTOCOLS` ด้วย tag + `eco.lock.json` แบบเดียวกับ `vendor/eco/` (ECO-R32)
+
+**ทุก repo:** public (Q12 ✅) · ชื่อขึ้นต้น `ZIZ-`/`ziz-` · มี `PROVENANCE.json` ถ้ายกโค้ดมา · release ด้วย tag `v*` + checksum · ❓ Q59–Q60
+
 ## 7. ข้อมูลขณะรัน (Windows)
 
 | ที่ | ของ |

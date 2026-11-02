@@ -39,12 +39,13 @@ S2 CLI     + ผู้ใช้เปิดเองในหน้า Node ข�
 - **เปลี่ยนจาก `11` §2:** Link (ถาม/ค้น/สรุป) ยังติดตั้งอัตโนมัติเมื่อมีทั้งสองฝั่งเหมือนเดิม แต่ **S0 ไม่ต้องรอ Z.I.Z** —
   เป็น plugin ในตัว (built-in) ที่ installer ของแต่ละแอปวางลงโฟลเดอร์ plugin ของตัวเอง ผ่าน plugin host `zydraxyl-ext/1` (P14) · ปิดได้ใน ตั้งค่า → Extensions
 - เหตุผลที่มากับแอปได้ (ต่างจาก Link): **ไม่มี AI · ไม่มีเน็ต · ไม่อ่านข้อมูลข้ามแอป · ไม่ส่งอะไรออกจากแอป** — เป็นแค่ "กฎของแอปเอง" ที่ใช้ UI ร่วม
-- โครง (repo `ZIZ-LINK` เดิม — เพิ่มโฟลเดอร์ ไม่เปิด repo ใหม่):
+- โครง — **repo แยก `ZIZ-SUGGEST`** (รอบ release ตาม build ของแอปเจ้าบ้าน ไม่ใช่ catalog แบบ Link — `02` §6.1):
   ```
-  ZIZ-LINK/
-    suggest/core/        engine + UI ghost/chip/card (vanilla JS · tokens.css ของ Eco) — ชุดเดียวทุกแอป
-    suggest/rules/<app>/ rules.json ต่อแอป (เจ้าของแอปแก้ได้ · ตรวจด้วย JSON Schema)
+  ZIZ-SUGGEST/
+    core/          engine + UI ghost/chip/card (vanilla JS · tokens.css ของ Eco) — ชุดเดียวทุกแอป
+    rules/<app>/   rules.json ต่อแอป (ตรวจด้วย schema `suggest-rules/1` จาก `ZIZ-PROTOCOLS`) — ❓ Q60
   ```
+  แอปเจ้าบ้าน vendor `ZIZ-SUGGEST` ด้วย tag ตอน build installer · อัปเดต S0 = ออกเวอร์ชันแอปนั้นใหม่
 - กฎตัวอย่าง (`rules.json` — ประกาศ ไม่ใช่โค้ด):
   ```json
   { "id": "baha.char.no-link", "on": "entity.saved", "when": { "kind": "character", "links": 0 },
@@ -144,7 +145,7 @@ agent เรียก ziz_scope_request(path, reason)        ← tool ใหม�
 ### 3.5 กับ DraconDex (และแอปอื่นภายหลัง)
 
 - DraconDex มี AI/agent ที่อ่าน Nexus เอง → เสนอให้ใช้ **สัญญาขอบเขตชุดเดียวกัน** (`scope = { level, roots }` + `outOfScope` + `scope_request`) เป็น P20 ·
-  Z.I.Z ไม่เขียนโค้ดลง DraconDex — ให้ spec + ชุดทดสอบ (`ZIZ-LINK/protocol/scope/`) · DraconDex ทำก่อน (Nexus = หน่วยเดียวกับ "โปรเจกต์" ในตารางข้างบน) แล้วแอปอื่นตาม
+  Z.I.Z ไม่เขียนโค้ดลง DraconDex — ให้ spec + ชุดทดสอบ (`ZIZ-PROTOCOLS/scope/`) · DraconDex ทำก่อน (Nexus = หน่วยเดียวกับ "โปรเจกต์" ในตารางข้างบน) แล้วแอปอื่นตาม
 - ก่อน DraconDex รองรับ: Z.I.Z บังคับได้เฉพาะทางที่ผ่าน gateway ของ Z.I.Z เท่านั้น — หน้า Node แสดงป้าย `DraconDex AI: ยังไม่รองรับขอบเขต` (ไม่ซ่อน)
 
 ---

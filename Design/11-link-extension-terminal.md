@@ -77,7 +77,7 @@ ZIZ-LINK (repo ใหม่ — multi-repo แบบ `08` §5)
   adapters/
     dracon/      แปลง "สิ่งที่เลือก/หน้าที่เปิด" ของ DraconDex → LinkContext · ผูกเมนู/ปุ่มลัด
     baha/  ryu/  lvq/  qzl/  our/  tia/
-  protocol/      link/1 schema (JSON Schema) + ชุดทดสอบด้วย Z.I.Z ปลอม
+  (protocol link/1 ย้ายไป `ZIZ-PROTOCOLS` — v0.4 · `02` §6.1 · Link vendor ด้วย tag)
   release.yml    tag v* → สร้าง ziz-link-<app>-<ver>.zizext ต่อแอป → PR เข้า catalog (`08` §6.2)
 ```
 `.zizext` = zip รูปแบบเดียวกับ `.zizpack` (`08` §6.1): `pack.json` (`kind: "extension"`, `host: "baha"`, `requires.host`, `requires.ziz`, `protocol: "link/1"`) + ไฟล์ UI + adapter
