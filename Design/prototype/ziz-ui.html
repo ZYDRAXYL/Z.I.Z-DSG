@@ -318,6 +318,19 @@ dialog .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
   </footer>
 </div>
 <div class="toast" id="toast" hidden role="status"></div>
+<dialog id="s2Dlg" aria-labelledby="s2DlgT">
+  <h2 id="s2DlgT">เปิด AI ช่วยแนะนำ (S2) ให้ <span id="s2App"></span></h2>
+  <p class="warnline" style="margin:0 0 8px">⚠ ใช้โทเคน/โควตาของคุณจริงทุกครั้งที่ S2 ทำงาน</p>
+  <dl class="kv"><dt>CLI</dt><dd id="s2Cli"></dd><dt>ขอบเขต</dt><dd id="s2Scope"></dd>
+  <dt>ต่อครั้ง</dt><dd class="num" id="s2Per"></dd><dt>ต่อวัน</dt><dd class="num" id="s2Day"></dd></dl>
+  <ul class="meta" style="margin:8px 0;padding-left:18px">
+    <li>ไม่ทำงานตอนพิมพ์ — ทำเมื่อคุณหยุดนิ่ง ≥ 20 วินาทีหลังบันทึก หรือกด ✦ แนะนำลึก</li>
+    <li>ส่งแค่สิ่งที่อยู่บนจอ + สรุปจากโมเดลในเครื่อง · อ่านเพิ่มได้เฉพาะในขอบเขต</li>
+    <li>ผลเป็นข้อเสนอใน Mirror เสมอ — ไม่เขียนลงแอปเอง</li></ul>
+  <label class="meta">เพดานต่อวัน (ไม่บังคับ): <input id="s2Cap" placeholder="ไม่ตั้ง" size="6" inputmode="numeric" style="background:var(--surface2);border:1px solid var(--line);border-radius:6px;color:var(--t1);padding:2px 6px"> คำขอ</label>
+  <p class="src" style="margin:6px 0 0">ตัวเลขเป็นค่าประมาณ ≈ (13 §2.6) · ปิดได้ทันทีจากแถบสถานะหรือหน้านี้</p>
+  <div class="row"><button class="btn" data-s2d="cancel" autofocus>ยกเลิก</button><button class="btn primary" data-s2d="ok">เปิดใช้</button></div>
+</dialog>
 <dialog id="scopeDlg" aria-labelledby="scopeDlgT">
   <h2 id="scopeDlgT">Claude Code ขออ่านนอกขอบเขต</h2>
   <dl class="kv"><dt>โฟลเดอร์</dt><dd id="sdPath"></dd><dt>ขนาด</dt><dd class="num" id="sdSize"></dd></dl>
@@ -361,7 +374,7 @@ const PATTERNS={
 const SCOPE={level:'secured', roots:new Set(['baha:0','ryu:0']), job:new Set()};  // Q53 ✅: first AI job → Secured on last folder
 const FOLDER=(a,j)=>a.name+'/'+a.groups[j][0];
 const TOK=g=>Math.round(g[1]*620);            // ponytail: fake ≈ tokens per group for the demo (13 §2.6: measure per CLI)
-const S2={}; APPS.forEach(a=>S2[a.id]={on:false,cap:''});   // Q55 ✅: cap optional, default none
+const S2={}; APPS.forEach(a=>S2[a.id]={on:false,cap:'',seen:false});  // seen: Z26 shown once per app   // Q55 ✅: cap optional, default none
 const LEDGER={local:9, cli:5, tok:41200, cache:78};
 function inScope(n){ if(SCOPE.level==='opened') return true; if(SCOPE.level==='overview') return false;
   if(n.kind==='group') return SCOPE.roots.has(n.id)||SCOPE.job.has(n.id);
@@ -504,6 +517,19 @@ function accessHTML(a){
       <div class="row"><button class="btn" data-demo="ask">จำลอง: agent ขออ่านนอกขอบเขต</button></div>`; }
   return `<div class="access"><div class="seg" role="group" aria-label="ระดับการอ่านของ AI">${lvl('overview','◇ ภาพรวม')}${lvl('secured','🔒 Secured')}${lvl('opened','🔓 Opened')}</div>${body}</div>`;
 }
+let s2For=null;
+function openS2(id){ const a=APPS.find(x=>x.id===id); s2For=id;
+  const roots=a.groups.map((g,j)=>j).filter(j=>SCOPE.level==='opened'||SCOPE.roots.has(id+':'+j)||SCOPE.job.has(id+':'+j));
+  const ctxTok=1800+Math.min(2000,roots.reduce((t,j)=>t+TOK(a.groups[j]),0)/4|0);   // ponytail: LinkContext + S1 summary + outline ≤ 2k, demo numbers
+  $('#s2App').textContent=a.name; $('#s2Cli').textContent='Claude Code (หลัก)';
+  $('#s2Scope').textContent=SCOPE.level==='opened'?'🔓 ทั้งโปรเจกต์':(roots.length?'🔒 '+roots.map(j=>FOLDER(a,j)).join(' · '):'🔒 ยังไม่มีโฟลเดอร์ของแอปนี้ในขอบเขต — S2 เห็นแค่สิ่งที่อยู่บนจอ');
+  $('#s2Per').textContent='≈'+(ctxTok/1000).toFixed(1)+'k โทเคน';
+  $('#s2Day').textContent='≈'+(ctxTok*10/1000).toFixed(0)+'k–'+(ctxTok*20/1000).toFixed(0)+'k โทเคน (10–20 ครั้ง ถ้าใช้ทั้งวัน)';
+  $('#s2Cap').value=S2[id].cap; $('#s2Dlg').showModal(); }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-s2d]'); if(!b) return; $('#s2Dlg').close();
+  if(b.dataset.s2d==='ok'){ const s=S2[s2For]; s.seen=true; s.on=true; s.cap=$('#s2Cap').value.replace(/\D/g,''); select(sel);
+    toast('เปิด S2 แล้ว'+(s.cap?' · เพดาน '+s.cap+' คำขอ/วัน':' · ไม่ตั้งเพดาน')); }
+  else toast('ยกเลิก — S2 ยังปิดอยู่'); });
 function tiersHTML(a){ const s=S2[a.id], noAI=SCOPE.level==='overview';
   return `<div class="access">
     <div class="tier"><b>S0</b> กฎของแอป <span class="sp"></span><span class="dot"></span> ทำงาน</div>
@@ -526,7 +552,9 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('change',e=>{
   const r=e.target.closest('[data-root]'); if(r){ r.checked?SCOPE.roots.add(r.dataset.root):SCOPE.roots.delete(r.dataset.root); select(sel); return; }
-  const s2=e.target.closest('[data-s2]'); if(s2){ S2[s2.dataset.s2].on=s2.checked; select(sel); if(s2.checked) toast('เปิด S2 แล้ว — แนะนำลึกเมื่อคุณหยุดนิ่ง ≥ 20 วินาที · ใช้โทเคนของคุณ'); return; }
+  const s2=e.target.closest('[data-s2]'); if(s2){ const id=s2.dataset.s2;
+    if(s2.checked&&!S2[id].seen){ s2.checked=false; openS2(id); return; }   // Z26 first time
+    S2[id].on=s2.checked; select(sel); if(s2.checked) toast('เปิด S2 แล้ว — แนะนำลึกเมื่อคุณหยุดนิ่ง ≥ 20 วินาที · ใช้โทเคนของคุณ'); return; }
   const c=e.target.closest('[data-cap]'); if(c){ S2[c.dataset.cap].cap=c.value.replace(/\D/g,''); select(sel); }
 });
 document.addEventListener('click',e=>{const b=e.target.closest('[data-space]'); if(b){ curSpace=b.dataset.space; renderSpaces(); go('spaces'); }});
