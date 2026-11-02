@@ -1,6 +1,6 @@
 # Z.I.Z — เอกสารออกแบบ
 
-> **สถานะ: ออกแบบ ยังไม่สร้าง** · ร่าง v0.1 · 2026-10-18 · **v0.2 · 2026-11-01** เพิ่ม `08`–`10` (โมเดลเล็ก · อ่านไฟล์เร็ว · UI ใหม่) — Q8 เปลี่ยนคำตอบ · **v0.3** เพิ่ม `11` (Link extension · Terminal) · **v0.4 · 2026-11-02** เพิ่ม `12` (Suggestion · ขอบเขตการอ่านของ AI)
+> **สถานะ: ออกแบบ ยังไม่สร้าง** · ร่าง v0.1 · 2026-10-18 · **v0.2 · 2026-11-01** เพิ่ม `08`–`10` (โมเดลเล็ก · อ่านไฟล์เร็ว · UI ใหม่) — Q8 เปลี่ยนคำตอบ · **v0.3** เพิ่ม `11` (Link extension · Terminal) · **v0.4 · 2026-11-02** เพิ่ม `12` (Suggestion · ขอบเขตการอ่านของ AI) · **v0.5** เพิ่ม `13` (งานวิจัยประหยัดโทเคน)
 > app id `ziz` · format code `ziz` (ECO-I1) · Eco v1 = Windows PC เท่านั้น
 
 ## Z.I.Z คืออะไร
@@ -28,6 +28,7 @@ Z.I.Z คือ "ห้องควบคุม" ของ Zydraxyl Eco: เป�
 | [`10-ui-home-mirror-spaces.md`](./10-ui-home-mirror-spaces.md) | **v0.2** Home แบบ Agent Graph 2D/3D · AI Mirror Workstation (duo view) · Spaces ต่อแอป (คำแนะนำ + รูปแบบซ้ำ) |
 | [`11-link-extension-terminal.md`](./11-link-extension-terminal.md) | **v0.3** Z.I.Z Link: extension ในแอป Eco ที่ติดตั้งอัตโนมัติเมื่อมีทั้งสองฝั่ง (ถาม/ค้น/สรุปไว/เปิด Z.I.Z) · หน้าต่างแชต/Terminal ต่อ CLI ในเครื่อง |
 | [`12-suggestions-read-scope.md`](./12-suggestions-read-scope.md) | **v0.4** Suggestion 3 รูปแบบ (Tool · Inline · Guide) 3 ชั้น (กฎมากับแอป · โมเดลของ Z.I.Z · CLI ที่เปิดเองในหน้า Node) · ขอบเขตการอ่านของ AI ภาพรวม / Secured / Opened |
+| [`13-token-economy-research.md`](./13-token-economy-research.md) | **v0.5** งานวิจัย paper + open source: assistant ฟรี/ถูกบน CLI ของผู้ใช้ · 6 ชั้นการประหยัด (ในเครื่อง → route → ส่งน้อย → cache → ตอบสั้น → ตรวจแทนทำซ้ำ) · ภาษาไทยจ่ายโทเคนแพงกว่า |
 | [`prototype/ziz-ui.html`](./prototype/ziz-ui.html) | prototype คลิกได้ของ Home / Mirror / Spaces (เปิดในเบราว์เซอร์) |
 
 ## ลำดับการอ่าน
