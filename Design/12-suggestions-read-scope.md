@@ -39,13 +39,13 @@ S2 CLI     + ผู้ใช้เปิดเองในหน้า Node ข�
 - **เปลี่ยนจาก `11` §2:** Link (ถาม/ค้น/สรุป) ยังติดตั้งอัตโนมัติเมื่อมีทั้งสองฝั่งเหมือนเดิม แต่ **S0 ไม่ต้องรอ Z.I.Z** —
   เป็น plugin ในตัว (built-in) ที่ installer ของแต่ละแอปวางลงโฟลเดอร์ plugin ของตัวเอง ผ่าน plugin host `zydraxyl-ext/1` (P14) · ปิดได้ใน ตั้งค่า → Extensions
 - เหตุผลที่มากับแอปได้ (ต่างจาก Link): **ไม่มี AI · ไม่มีเน็ต · ไม่อ่านข้อมูลข้ามแอป · ไม่ส่งอะไรออกจากแอป** — เป็นแค่ "กฎของแอปเอง" ที่ใช้ UI ร่วม
-- โครง — **repo แยก `ZIZ-SUGGEST`** (รอบ release ตาม build ของแอปเจ้าบ้าน ไม่ใช่ catalog แบบ Link — `02` §6.1):
+- โครง — **repo แยก `Z.I.Z-SGT`** (รอบ release ตาม build ของแอปเจ้าบ้าน ไม่ใช่ catalog แบบ Link — `02` §6.1):
   ```
-  ZIZ-SUGGEST/
+  Z.I.Z-SGT/
     core/          engine + UI ghost/chip/card (vanilla JS · tokens.css ของ Eco) — ชุดเดียวทุกแอป
-    rules/<app>/   rules.json ต่อแอป (ตรวจด้วย schema `suggest-rules/1` จาก `ZIZ-PROTOCOLS`) — Q60 ✅
+    rules/<app>/   rules.json ต่อแอป (ตรวจด้วย schema `suggest-rules/1` จาก `Z.I.Z-SPC`) — Q60 ✅
   ```
-  แอปเจ้าบ้าน vendor `ZIZ-SUGGEST` ด้วย tag ตอน build installer · อัปเดต S0 = ออกเวอร์ชันแอปนั้นใหม่
+  แอปเจ้าบ้าน vendor `Z.I.Z-SGT` ด้วย tag ตอน build installer · อัปเดต S0 = ออกเวอร์ชันแอปนั้นใหม่
 - กฎตัวอย่าง (`rules.json` — ประกาศ ไม่ใช่โค้ด):
   ```json
   { "id": "baha.char.no-link", "on": "entity.saved", "when": { "kind": "character", "links": 0 },
@@ -54,7 +54,7 @@ S2 CLI     + ผู้ใช้เปิดเองในหน้า Node ข�
     "show": "inline", "from": "habit.mostCommon(project, kind=character, field=race)" }
   ```
 - habit ของ S0 = **ตารางนับ** ในแอป (ค่าที่ใช้บ่อยต่อช่อง · คู่ action ที่ตามกันบ่อย) จาก event ในแอปเอง —
-  ponytail: นับความถี่ + คู่ลำดับ (bigram) เท่านั้น · ลำดับยาว 2–6 และ Markov อันดับ 2 เป็นงานของ `ZIZ-M-habit` ใน S1 (`10` §4.3)
+  ponytail: นับความถี่ + คู่ลำดับ (bigram) เท่านั้น · ลำดับยาว 2–6 และ Markov อันดับ 2 เป็นงานของ `Z.I.Z-MDL-Habit` ใน S1 (`10` §4.3)
 - ไม่มี Z.I.Z ในเครื่อง → S0 ยังทำงานครบ · มีบรรทัดเล็กท้ายแผง: "ติดตั้ง Z.I.Z เพื่อคำแนะนำข้ามแอป" (แสดงครั้งเดียวต่อสัปดาห์ ปิดได้)
 
 ### 2.2 S1 — เมื่อมี Z.I.Z + โมเดลที่โหลดแล้ว
@@ -63,11 +63,11 @@ S0 ถาม Z.I.Z ผ่าน pipe ของ Link (`11` §3.2) ด้วย me
 
 | โมเดล (`08` §2) | เพิ่มอะไรให้ suggestion |
 |---|---|
-| `ZIZ-M-habit` | ลำดับยาว + "ถัดไปคุณมักจะ" ข้ามแอป (BahaMyth → RyuLong) · S-guide |
-| `ZIZ-M-embed` | S-inline ของชื่อ/alias ที่มีในต้นฉบับ · S-tool "มีตัวละครคล้ายกันอยู่แล้ว 2 ตัว" |
-| `ZIZ-M-ner` | ชื่อในต้นฉบับที่ยังไม่มี entity → S-guide "สร้าง 6 ตัวละครที่ยังขาด" (→ Mirror) |
-| `ZIZ-M-route` | คัดข้อความที่ highlight ว่าเป็นคำสั่งแฝงไหม ก่อนใช้เป็นบริบท (`04` §7.2) |
-| `ZIZ-M-gen` (opt-in) | S-inline ประโยคสั้น (เช่น ช่องคำอธิบาย ≤ 1 ประโยค) · ติดป้าย `S1 gen` เสมอ |
+| `Z.I.Z-MDL-Habit` | ลำดับยาว + "ถัดไปคุณมักจะ" ข้ามแอป (BahaMyth → RyuLong) · S-guide |
+| `Z.I.Z-MDL-Embed` | S-inline ของชื่อ/alias ที่มีในต้นฉบับ · S-tool "มีตัวละครคล้ายกันอยู่แล้ว 2 ตัว" |
+| `Z.I.Z-MDL-NER` | ชื่อในต้นฉบับที่ยังไม่มี entity → S-guide "สร้าง 6 ตัวละครที่ยังขาด" (→ Mirror) |
+| `Z.I.Z-MDL-Route` | คัดข้อความที่ highlight ว่าเป็นคำสั่งแฝงไหม ก่อนใช้เป็นบริบท (`04` §7.2) |
+| `Z.I.Z-MDL-Gen` (opt-in) | S-inline ประโยคสั้น (เช่น ช่องคำอธิบาย ≤ 1 ประโยค) · ติดป้าย `S1 gen` เสมอ |
 
 - งบ: `link_suggest` ตอบ **< 80 ms** (S-inline) / **< 300 ms** (S-tool, S-guide) · เกินงบ = ไม่แสดง (ไม่ค้าง ไม่รอ)
 - ทุกผลมี ref ที่มาใน index (หลัก "หลักฐานก่อนความเชื่อ") · ไม่มีที่มา = ไม่แสดง
@@ -147,7 +147,7 @@ agent เรียก ziz_scope_request(path, reason)        ← tool ใหม�
 ### 3.5 กับ DraconDex (และแอปอื่นภายหลัง)
 
 - DraconDex มี AI/agent ที่อ่าน Nexus เอง → เสนอให้ใช้ **สัญญาขอบเขตชุดเดียวกัน** (`scope = { level, roots }` + `outOfScope` + `scope_request`) เป็น P20 ·
-  Z.I.Z ไม่เขียนโค้ดลง DraconDex — ให้ spec + ชุดทดสอบ (`ZIZ-PROTOCOLS/scope/`) · DraconDex ทำก่อน (Nexus = หน่วยเดียวกับ "โปรเจกต์" ในตารางข้างบน) แล้วแอปอื่นตาม
+  Z.I.Z ไม่เขียนโค้ดลง DraconDex — ให้ spec + ชุดทดสอบ (`Z.I.Z-SPC/scope/`) · DraconDex ทำก่อน (Nexus = หน่วยเดียวกับ "โปรเจกต์" ในตารางข้างบน) แล้วแอปอื่นตาม
 - ก่อน DraconDex รองรับ: Z.I.Z บังคับได้เฉพาะทางที่ผ่าน gateway ของ Z.I.Z เท่านั้น — หน้า Node แสดงป้าย `DraconDex AI: ยังไม่รองรับขอบเขต` (ไม่ซ่อน)
 
 ---
@@ -206,7 +206,7 @@ agent เรียก ziz_scope_request(path, reason)        ← tool ใหม�
 | เรื่อง | ทำอย่างไร |
 |---|---|
 | habit S0 | ในแอปเจ้าบ้าน (storage ต่อ extension · P14) · ไม่มีเนื้อหา มีแค่ ค่าช่อง+ความถี่ ของช่องที่ประกาศ · ลบได้ในตั้งค่าแอป |
-| habit S1 | ใน Z.I.Z (`ZIZ-M-habit` state `08` §7) · ปุ่ม `ลบประวัติการเรียนรู้` เดิม (`10` §5) |
+| habit S1 | ใน Z.I.Z (`Z.I.Z-MDL-Habit` state `08` §7) · ปุ่ม `ลบประวัติการเรียนรู้` เดิม (`10` §5) |
 | ขอบเขตต่อโปรเจกต์ | `<workspace>\ZIZ\scope.json` — `{ level, roots[], updatedAt }` · path เป็น relative เสมอ (ห้าม `..` · ห้าม absolute — ตรวจตอนโหลด) |
 | log | ทุก `scope_request` / การเปลี่ยนระดับ / คำขอ S2 อยู่ใน `runs/*.ndjson` (ตามอายุ Q26) |
 | ไม่ทำ | ไม่ส่ง suggestion/การกด accept ออกนอกเครื่อง · ไม่มี telemetry · S0 ไม่เปิด socket ใด ๆ |

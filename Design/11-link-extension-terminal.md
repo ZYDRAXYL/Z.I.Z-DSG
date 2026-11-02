@@ -72,12 +72,12 @@ extension ตัวเล็กที่อยู่**ในหน้าต่�
 ### 3.1 สองชั้น: UI กลาง 1 ชุด + adapter บาง ๆ ต่อแอป
 
 ```
-ZIZ-LINK (repo ใหม่ — multi-repo แบบ `08` §5)
+Z.I.Z-LNK (repo ใหม่ — multi-repo แบบ `08` §5)
   ui/            web component <ziz-link-panel> (vanilla JS + tokens.css ของ Eco) — เหมือนกันทุกแอป
   adapters/
     dracon/      แปลง "สิ่งที่เลือก/หน้าที่เปิด" ของ DraconDex → LinkContext · ผูกเมนู/ปุ่มลัด
     baha/  ryu/  lvq/  qzl/  our/  tia/
-  (protocol link/1 ย้ายไป `ZIZ-PROTOCOLS` — v0.4 · `02` §6.1 · Link vendor ด้วย tag)
+  (protocol link/1 ย้ายไป `Z.I.Z-SPC` — v0.4 · `02` §6.1 · Link vendor ด้วย tag)
   release.yml    tag v* → สร้าง ziz-link-<app>-<ver>.zizext ต่อแอป → PR เข้า catalog (`08` §6.2)
 ```
 `.zizext` = zip รูปแบบเดียวกับ `.zizpack` (`08` §6.1): `pack.json` (`kind: "extension"`, `host: "baha"`, `requires.host`, `requires.ziz`, `protocol: "link/1"`) + ไฟล์ UI + adapter
@@ -148,7 +148,7 @@ ctx/q → ziz-index: ค้น BM25 + ความหมาย ใน scope โ�
 ที่มา: index · ner 1.3 · 120 ms
 ```
 - ทุกบรรทัดมีที่มา (หลักข้อ 3 "หลักฐานก่อนความเชื่อ") · ไม่มีประโยคที่โมเดลแต่งขึ้นเอง
-- ถ้าภายหลังมี `ZIZ-M-gen` (`08` Q31) จะใช้เขียนสรุปเป็นย่อหน้าได้ — v1 เป็นแบบสกัดเท่านั้น
+- ถ้าภายหลังมี `Z.I.Z-MDL-Gen` (`08` Q31) จะใช้เขียนสรุปเป็นย่อหน้าได้ — v1 เป็นแบบสกัดเท่านั้น
 
 ---
 

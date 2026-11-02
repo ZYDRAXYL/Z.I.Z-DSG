@@ -17,7 +17,7 @@ Z.I.Z คือ "ห้องควบคุม" ของ Zydraxyl Eco: เป�
 | ไฟล์ | เนื้อหา |
 |---|---|
 | [`01-research-summary.md`](./01-research-summary.md) | สรุปการค้นคว้า: ผลิตภัณฑ์/OSS ที่เทียบ · สิ่งที่ยืม · สิ่งที่เลี่ยง · ข้อสรุปต่อหัวข้อ |
-| [`02-architecture.md`](./02-architecture.md) | stack · process model · **แผนที่ repo ทั้งหมด §6.1** · การขับ agent (ACP ก่อน, headless สำรอง) · gateway MCP · ชั้น · โฟลเดอร์ · ของที่ยกมาจาก DraconDex |
+| [`02-architecture.md`](./02-architecture.md) | stack · process model · **เกณฑ์แยก repo §6.1** (รายการ repo อยู่ที่ README หลัก) · การขับ agent (ACP ก่อน, headless สำรอง) · gateway MCP · ชั้น · โฟลเดอร์ · ของที่ยกมาจาก DraconDex |
 | [`03-features.md`](./03-features.md) | รายการฟีเจอร์ MVP / v1 / later พร้อมเหตุผลและที่มา |
 | [`04-internals.md`](./04-internals.md) | data model (SQLite) · รูปแบบไฟล์ · pipeline นำเข้า (DOCX/XLSX/นิยายไทยยาว) · changeset · recipe · การป้องกัน prompt injection · migration |
 | [`05-ux-ui.md`](./05-ux-ui.md) | หน้าจอ · ASCII layout · flow ทีละขั้น · onboarding · ธีม · accessibility · ตัวอักษรไทย |

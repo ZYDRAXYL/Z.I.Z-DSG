@@ -1,0 +1,48 @@
+{
+  "$comment": "DRAFT — repos below are not created yet. Same shape as DraconDex-APP/chain/chain.json. Every Z.I.Z repo carries a copy once created.",
+  "chainVersion": "0.1.0",
+  "org": "ZYDRAXYL",
+  "self": "APP",
+  "repos": {
+    "APP":          { "repo": "Z.I.Z-APP",          "role": "hub",       "private": false, "owns": [".claude/", "chain/", "Design/", "tools/"], "releases": null, "versionSource": null },
+    "EXE":          { "repo": "Z.I.Z-EXE",          "role": "app",       "private": false, "owns": ["electron/", "core/", "ui/", "vendor/"], "releases": "v*", "versionSource": "package.json#version" },
+    "WEB":          { "repo": "Z.I.Z-WEB",          "role": "site",      "private": false, "owns": ["*.html", "assets/"], "releases": "mirror", "versionSource": null },
+    "SPC":          { "repo": "Z.I.Z-SPC",          "role": "schema",    "private": false, "owns": ["link/", "scope/", "suggest-rules/", "conformance/"], "releases": "spc-v*", "versionSource": "spc.json#spcVersion" },
+    "IDX":          { "repo": "Z.I.Z-IDX",          "role": "service",   "private": false, "owns": ["src/", "Cargo.toml", "PROVENANCE.json"], "releases": "idx-v*", "versionSource": "Cargo.toml#package.version" },
+    "LNK":          { "repo": "Z.I.Z-LNK",          "role": "extension", "private": false, "owns": ["ui/", "adapters/"], "releases": "lnk-v*", "versionSource": "package.json#version" },
+    "SGT":          { "repo": "Z.I.Z-SGT",          "role": "extension", "private": false, "owns": ["core/", "rules/"], "releases": "sgt-v*", "versionSource": "package.json#version" },
+    "MDL":          { "repo": "Z.I.Z-MDL",          "role": "content",   "private": false, "owns": ["catalog.json", "abi/", "tools/", "eval/"], "releases": "catalog-v*", "versionSource": "catalog.json#catalogVersion" },
+    "MDL-Embed":    { "repo": "Z.I.Z-MDL-Embed",    "role": "model",     "private": false, "owns": ["train/", "export/", "eval/", "pack.json"], "releases": "v*", "versionSource": "pack.json#version" },
+    "MDL-NER":      { "repo": "Z.I.Z-MDL-NER",      "role": "model",     "private": false, "owns": ["train/", "export/", "eval/", "pack.json"], "releases": "v*", "versionSource": "pack.json#version" },
+    "MDL-Route":    { "repo": "Z.I.Z-MDL-Route",    "role": "model",     "private": false, "owns": ["train/", "export/", "eval/", "pack.json"], "releases": "v*", "versionSource": "pack.json#version" },
+    "MDL-Habit":    { "repo": "Z.I.Z-MDL-Habit",    "role": "model",     "private": false, "owns": ["vocab/", "eval/", "pack.json"], "releases": "v*", "versionSource": "pack.json#version" },
+    "MDL-Gen":      { "repo": "Z.I.Z-MDL-Gen",      "role": "model",     "private": false, "owns": ["export/", "eval/", "pack.json"], "releases": "v*", "versionSource": "pack.json#version" }
+  },
+  "chains": {
+    "app":   ["APP", "SPC", ["IDX", "MDL"], "EXE", "WEB"],
+    "link":  ["APP", "SPC", ["LNK", "SGT"], "MDL"],
+    "model": ["APP", ["MDL-Embed", "MDL-NER", "MDL-Route", "MDL-Habit", "MDL-Gen"], "MDL", "EXE"]
+  },
+  "edges": [
+    { "from": "APP", "to": "*", "carries": "claude-tooling" },
+    { "from": "SPC", "to": "EXE", "carries": "protocol-schema" },
+    { "from": "SPC", "to": "IDX", "carries": "protocol-schema" },
+    { "from": "SPC", "to": "LNK", "carries": "protocol-schema" },
+    { "from": "SPC", "to": "SGT", "carries": "protocol-schema" },
+    { "from": "IDX", "to": "EXE", "carries": "index-binary" },
+    { "from": "MDL", "to": "EXE", "carries": "signed-catalog" },
+    { "from": "MDL-Embed", "to": "MDL", "carries": "model-pack" },
+    { "from": "MDL-NER", "to": "MDL", "carries": "model-pack" },
+    { "from": "MDL-Route", "to": "MDL", "carries": "model-pack" },
+    { "from": "MDL-Habit", "to": "MDL", "carries": "model-pack" },
+    { "from": "MDL-Gen", "to": "MDL", "carries": "model-pack" },
+    { "from": "LNK", "to": "MDL", "carries": "extension-pack" },
+    { "from": "EXE", "to": "WEB", "carries": "release-mirror" }
+  ],
+  "external": [
+    { "from": "LNK", "to": "DraconDex-EXE", "carries": "extension-via-catalog", "note": "host app installs .zizext when Z.I.Z is present (11 §2)" },
+    { "from": "SGT", "to": "DraconDex-EXE", "carries": "vendored-at-build", "note": "S0 ships inside the host installer (12 §2.1); then BahaMyth, RyuLong" },
+    { "from": "IDX", "to": "*Eco apps*", "carries": "index-pipe", "note": "P11, later" }
+  ],
+  "propagation": { "mode": "pull-request", "label": "chained-update", "trailerPrefix": "Chained-From" }
+}
